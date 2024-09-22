@@ -1,0 +1,59 @@
+[versions]
+kotlin = "1.9.21"
+ktlint_plugin = "11.6.1"
+
+spring_boot = "3.2.0"
+spring_cloud_dependencies = "2023.0.0"
+spring_io_dependency_management = "1.1.0"
+spring_mockk = "4.0.2"
+
+lombok = "1.18.22"
+
+redisson = "3.25.2"
+# test
+junit = "5.9.3"
+assertj = "3.24.2"
+test_containers = "1.19.3"
+fixture_monkey = "1.0.13"
+
+[plugins]
+kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin_kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin_spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin_jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint_plugin" }
+
+spring_boot = { id = "org.springframework.boot", version.ref = "spring_boot" }
+spring_dependency_management = { id = "io.spring.dependency-management", version.ref = "spring_io_dependency_management" }
+[libraries]
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+
+spring_context = { module = "org.springframework:spring-context" }
+spring_cloud_dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring_cloud_dependencies" }
+spring_boot_dependencies = { module = "org.springframework.boot:spring-boot-dependencies" }
+spring_boot_starter_web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring_boot_starter_data_jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring_boot_starter_actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring_boot_configuration_processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring_boot_starter_test = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+spring_boot_testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+test_containers_junit_jupiter = { module = "org.testcontainers:junit-jupiter" }
+test_containers_mysql = { module = "org.testcontainers:mysql" }
+
+fixture_monkey_starter_kotlin = { module = "com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin", version.ref = "fixture_monkey" }
+
+mysql_connector = { module = "com.mysql:mysql-connector-j" }
+
+h2 = { module = "com.h2database:h2" }
+
+jackson_kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
+
+micrometer_tracing_bridge_brave = { module = "io.micrometer:micrometer-tracing-bridge-brave" }
+micrometer_registry_prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
+# test
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+spring_mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring_mockk" }
+[bundles]
+testcontainers_mysql = ["test_containers_mysql", "spring_boot_testcontainers", "test_containers_junit_jupiter","spring_boot_starter_test"]
