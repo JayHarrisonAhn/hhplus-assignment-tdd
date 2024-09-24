@@ -10,28 +10,27 @@ import java.util.List;
 @Service
 public class PointService {
     @Autowired
-    private UserPointTable userPointTable;
-
-    @Autowired
-    private PointHistoryTable pointHistoryTable;
+    private PointManager pointManager;
 
     public UserPoint viewPointAmount(long userId) {
-        UserPoint userPoint = userPointTable.selectById(userId);
-        return userPoint;
+        return this.pointManager.getPoint(userId);
     }
 
     public List<PointHistory> viewPointHistory(long userId) {
-        List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(userId);
-        return pointHistories;
+        return this.pointManager.getPointHistory(userId);
     }
 
     public UserPoint chargePoint(long userId, long amount) {
-        UserPoint userPoint = userPointTable.selectById(userId);
-        return userPointTable.insertOrUpdate(userId, userPoint.point() + amount);
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
+        }
+        return this.pointManager.incrementPoint(userId, amount);
     }
 
     public UserPoint usePoint(long userId, long amount) {
-        UserPoint userPoint = userPointTable.selectById(userId);
-        return userPointTable.insertOrUpdate(userId, userPoint.point() - amount);
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
+        }
+        return this.pointManager.incrementPoint(userId, -amount);
     }
 }

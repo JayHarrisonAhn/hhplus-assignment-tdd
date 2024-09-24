@@ -10,6 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointServiceTest {
@@ -17,10 +20,7 @@ class PointServiceTest {
     private AutoCloseable closeable;
 
     @Mock
-    UserPointTable userPointTable;
-
-    @Mock
-    PointHistoryTable pointHistoryTable;
+    PointManager pointManager;
 
     @InjectMocks
     PointService pointService;
@@ -28,6 +28,10 @@ class PointServiceTest {
     @BeforeEach
     void setUp() {
         this.closeable = MockitoAnnotations.openMocks(this);
+        this.userId = 1;
+        this.userPoint = new UserPoint(userId, 2, 3);
+        this.userPointHistory = new ArrayList<>();
+        this.userPointHistory.add(new PointHistory(1, userId, 3, TransactionType.CHARGE, 3));
     }
 
     @AfterEach
@@ -35,16 +39,53 @@ class PointServiceTest {
         this.closeable.close();
     }
 
+    long userId;
+    UserPoint userPoint;
+    List<PointHistory> userPointHistory;
+
     @Test
     void viewPointAmount_success() {
-        UserPoint userPoint = new UserPoint(1, 2, 3);
-
         given(
-                userPointTable.selectById(userPoint.id())
+                pointManager.getPoint(this.userId)
         ).willReturn(
-                userPoint
+                this.userPoint
         );
 
-        assertEquals(userPoint, pointService.viewPointAmount(userPoint.id()));
+        assertEquals(this.userPoint, pointService.viewPointAmount(this.userPoint.id()));
+    }
+
+    @Test
+    void viewPointHistory_success() {
+        given(
+                pointManager.getPointHistory(this.userId)
+        ).willReturn(
+                this.userPointHistory
+        );
+
+        assertEquals(this.userPointHistory, pointService.viewPointHistory(this.userId));
+    }
+
+    @Test
+    void chargePoint_fail_minusAmount() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pointService.chargePoint(this.userId, -1000)
+        );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pointService.chargePoint(this.userId, 0)
+        );
+    }
+
+    @Test
+    void usePoint_fail_minusAmount() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pointService.usePoint(this.userId, -1000)
+        );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pointService.usePoint(this.userId, 0)
+        );
     }
 }
