@@ -24,13 +24,13 @@ public class PointService {
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
-        return this.pointManager.incrementPoint(userId, amount);
+        return this.pointManager.incrementPoint(userId, amount, TransactionType.CHARGE);
     }
 
     public UserPoint usePoint(long userId, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
-        return this.pointManager.incrementPoint(userId, -amount);
+        return this.pointManager.incrementPoint(userId, -amount, TransactionType.USE);
     }
 }

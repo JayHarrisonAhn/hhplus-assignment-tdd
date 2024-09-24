@@ -19,8 +19,14 @@ public class PointManager {
         return this.userPointTable.selectById(userId);
     }
 
-    UserPoint incrementPoint(long userId, long amount) {
-        return new UserPoint(1,1,1);
+    UserPoint incrementPoint(long userId, long amount, TransactionType transactionType) {
+        UserPoint userPoint = this.userPointTable.selectById(userId);
+
+        UserPoint newUserPoint = this.userPointTable.insertOrUpdate(userId, userPoint.point() + amount);
+
+        this.pointHistoryTable.insert(userId, amount, transactionType, System.currentTimeMillis());
+
+        return newUserPoint;
     }
 
     List<PointHistory> getPointHistory(long userId) {
