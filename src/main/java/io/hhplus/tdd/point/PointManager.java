@@ -22,7 +22,13 @@ public class PointManager {
     UserPoint incrementPoint(long userId, long amount, TransactionType transactionType) {
         UserPoint userPoint = this.userPointTable.selectById(userId);
 
-        UserPoint newUserPoint = this.userPointTable.insertOrUpdate(userId, userPoint.point() + amount);
+        long totalAmount = userPoint.point() + amount;
+
+        if(totalAmount < 0) {
+            throw new IllegalArgumentException("Point amount must be greater than zero");
+        }
+
+        UserPoint newUserPoint = this.userPointTable.insertOrUpdate(userId, totalAmount);
 
         this.pointHistoryTable.insert(userId, amount, transactionType, System.currentTimeMillis());
 

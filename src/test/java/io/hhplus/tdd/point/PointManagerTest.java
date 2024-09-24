@@ -28,7 +28,7 @@ class PointManagerTest {
     @BeforeEach
     void setUp() {
         this.closeable = MockitoAnnotations.openMocks(this);
-        this.userId = 1;
+        this.userPoint = new UserPoint(1, 1000, 1);
     }
 
     @AfterEach
@@ -36,45 +36,57 @@ class PointManagerTest {
         closeable.close();
     }
 
-    long userId;
+    UserPoint userPoint;
 
     @Test
     void incrementPoint_success() {
         // Given
-        long pointAmount = 1000;
+        this.userPoint = new UserPoint(1, 1000, 1);
         long incrementAmount = 2000;
-        UserPoint userPoint = new UserPoint(this.userId, pointAmount, 1);
-        TransactionType transactionType = TransactionType.CHARGE;
 
         given(
-                userPointTable.selectById(this.userId)
+                userPointTable.selectById(this.userPoint.id())
         ).willReturn(
                 userPoint
         );
 
         // When
-        this.pointManager.incrementPoint(this.userId, incrementAmount, transactionType);
+        this.pointManager.incrementPoint(this.userPoint.id(), incrementAmount, TransactionType.CHARGE);
 
         // Then
-        ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Long> amountCaptor = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<TransactionType> transactionCaptor = ArgumentCaptor.forClass(TransactionType.class);
 
         then(userPointTable).should(atMostOnce()).insertOrUpdate(
-                userIdCaptor.capture(),
+                anyLong(),
                 amountCaptor.capture()
         );
-        assertEquals(this.userId, userIdCaptor.getValue());
-        assertEquals(pointAmount + incrementAmount, amountCaptor.getValue());
+        assertEquals(this.userPoint.point() + incrementAmount, amountCaptor.getValue());
 
         then(pointHistoryTable).should(atMostOnce()).insert(
-                userIdCaptor.capture(),
+                anyLong(),
                 amountCaptor.capture(),
-                transactionCaptor.capture(),
+                any(TransactionType.class),
                 anyLong()
         );
-        assertEquals(this.userId, userIdCaptor.getValue());
         assertEquals(incrementAmount, amountCaptor.getValue());
-        assertEquals(transactionType, transactionCaptor.getValue());
+    }
+
+    @Test
+    void incrementPoint_fail_minusTotalAmount() {
+        // Given
+        this.userPoint = new UserPoint(1, 1000, 1);
+        long decrementAmount = -2000;
+
+        given(
+                userPointTable.selectById(this.userPoint.id())
+        ).willReturn(
+                userPoint
+        );
+
+        // When
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.pointManager.incrementPoint(this.userPoint.id(), decrementAmount, TransactionType.USE)
+        );
     }
 }
