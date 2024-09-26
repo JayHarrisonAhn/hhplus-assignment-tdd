@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.unit;
 
 import io.hhplus.tdd.point.entity.PointHistory;
 import io.hhplus.tdd.point.entity.TransactionType;
@@ -32,9 +32,9 @@ class PointServiceTest {
     void setUp() {
         this.closeable = MockitoAnnotations.openMocks(this);
         this.userId = 1;
-        this.userPoint = new UserPoint(userId, 2, 3);
+        this.userPoint = new UserPoint(userId, 100, 3);
         this.userPointHistory = new ArrayList<>();
-        this.userPointHistory.add(new PointHistory(1, userId, 3, TransactionType.CHARGE, 3));
+        this.userPointHistory.add(new PointHistory(1, userId, 100, TransactionType.CHARGE, 3));
     }
 
     @AfterEach

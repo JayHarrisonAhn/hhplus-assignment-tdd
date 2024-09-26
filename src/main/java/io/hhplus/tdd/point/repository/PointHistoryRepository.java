@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,16 +17,26 @@ public class PointHistoryRepository {
 
     final private PointHistoryTable pointHistoryTable;
 
-    public PointHistory insert(PointHistoryDTO pointHistory) {
-        return this.pointHistoryTable.insert(
-                pointHistory.userId(),
-                pointHistory.amount(),
-                pointHistory.type(),
-                pointHistory.updateMillis()
+    final private ReadWriteLock tableLock = new ReentrantReadWriteLock();
+
+    public PointHistory insert(PointHistoryDTO pointHistoryDTO) {
+        Lock lock = tableLock.writeLock();
+        lock.lock();
+        PointHistory pointHistory = this.pointHistoryTable.insert(
+                pointHistoryDTO.userId(),
+                pointHistoryDTO.amount(),
+                pointHistoryDTO.type(),
+                pointHistoryDTO.updateMillis()
         );
+        lock.unlock();
+        return pointHistory;
     }
 
     public List<PointHistory> selectAllByUserId(long userId) {
-        return this.pointHistoryTable.selectAllByUserId(userId);
+        Lock lock = tableLock.readLock();
+        lock.lock();
+        List<PointHistory> pointHistories = this.pointHistoryTable.selectAllByUserId(userId);
+        lock.unlock();
+        return pointHistories;
     }
 }
