@@ -127,4 +127,27 @@ class PointManagerTest {
                 )
         );
     }
+
+    @Test
+    void accumulatePoint_fail_overMaxTotalAmount() {
+        // Given
+        this.userPoint = new UserPoint(1, 1000, 1);
+        long increaseAmount = 100_000_000L;
+
+        given(
+                userPointRepository.selectById(this.userPoint.id())
+        ).willReturn(
+                userPoint
+        );
+
+        // When
+        assertThrows(
+                IllegalStateException.class,
+                () -> this.pointManager.accumulatePoint(
+                        this.userPoint.id(),
+                        increaseAmount,
+                        TransactionType.USE
+                )
+        );
+    }
 }
