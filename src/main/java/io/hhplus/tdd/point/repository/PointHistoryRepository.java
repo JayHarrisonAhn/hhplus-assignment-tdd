@@ -3,17 +3,16 @@ package io.hhplus.tdd.point.repository;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.point.dto.PointHistoryDTO;
 import io.hhplus.tdd.point.entity.PointHistory;
-import io.hhplus.tdd.point.entity.TransactionType;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class PointHistoryRepository {
 
-    private PointHistoryTable pointHistoryTable;
+    final private PointHistoryTable pointHistoryTable;
 
     public PointHistory insert(PointHistoryDTO pointHistory) {
         return this.pointHistoryTable.insert(

@@ -3,14 +3,14 @@ package io.hhplus.tdd.point.repository;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.dto.UserPointDTO;
 import io.hhplus.tdd.point.entity.UserPoint;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@NoArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class UserPointRepository {
 
-    private UserPointTable userPointTable;
+    final private UserPointTable userPointTable;
 
     public UserPoint selectById(Long id) {
         return userPointTable.selectById(id);

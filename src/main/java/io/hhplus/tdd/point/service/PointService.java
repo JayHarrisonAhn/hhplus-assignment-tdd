@@ -4,15 +4,15 @@ import io.hhplus.tdd.point.util.PointManager;
 import io.hhplus.tdd.point.entity.PointHistory;
 import io.hhplus.tdd.point.entity.TransactionType;
 import io.hhplus.tdd.point.entity.UserPoint;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class PointService {
-    private PointManager pointManager;
+    private final PointManager pointManager;
 
     public UserPoint viewPointAmount(long userId) {
         return this.pointManager.getPoint(userId);
@@ -36,3 +36,4 @@ public class PointService {
         return this.pointManager.accumulatePoint(userId, -amount, TransactionType.USE);
     }
 }
+

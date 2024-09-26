@@ -7,17 +7,17 @@ import io.hhplus.tdd.point.entity.TransactionType;
 import io.hhplus.tdd.point.entity.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class PointManager {
-    private UserPointRepository userPointRepository;
-    private PointHistoryRepository pointHistoryRepository;
-    private PointTableAccessor pointTableAccessor;
+    final private UserPointRepository userPointRepository;
+    final private PointHistoryRepository pointHistoryRepository;
+    final private PointTableAccessor pointTableAccessor;
 
     public UserPoint getPoint(long userId) {
         return this.pointTableAccessor.access(userId, () ->
