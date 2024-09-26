@@ -1,15 +1,17 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.service;
 
-import io.hhplus.tdd.database.PointHistoryTable;
-import io.hhplus.tdd.database.UserPointTable;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.hhplus.tdd.point.util.PointManager;
+import io.hhplus.tdd.point.entity.PointHistory;
+import io.hhplus.tdd.point.entity.TransactionType;
+import io.hhplus.tdd.point.entity.UserPoint;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Service
 public class PointService {
-    @Autowired
     private PointManager pointManager;
 
     public UserPoint viewPointAmount(long userId) {
@@ -24,13 +26,13 @@ public class PointService {
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
-        return this.pointManager.incrementPoint(userId, amount, TransactionType.CHARGE);
+        return this.pointManager.accumulatePoint(userId, amount, TransactionType.CHARGE);
     }
 
     public UserPoint usePoint(long userId, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
-        return this.pointManager.incrementPoint(userId, -amount, TransactionType.USE);
+        return this.pointManager.accumulatePoint(userId, -amount, TransactionType.USE);
     }
 }

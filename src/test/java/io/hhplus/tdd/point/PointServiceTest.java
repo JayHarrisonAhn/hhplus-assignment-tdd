@@ -1,5 +1,10 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.point.entity.PointHistory;
+import io.hhplus.tdd.point.entity.TransactionType;
+import io.hhplus.tdd.point.entity.UserPoint;
+import io.hhplus.tdd.point.service.PointService;
+import io.hhplus.tdd.point.util.PointManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PointServiceTest {
 
-    private AutoCloseable closeable;
+    @InjectMocks
+    PointService pointService;
 
     @Mock
     PointManager pointManager;
 
-    @InjectMocks
-    PointService pointService;
+    private AutoCloseable closeable;
 
     @BeforeEach
     void setUp() {

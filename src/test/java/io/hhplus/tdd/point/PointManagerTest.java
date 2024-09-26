@@ -1,7 +1,14 @@
 package io.hhplus.tdd.point;
 
-import io.hhplus.tdd.database.PointHistoryTable;
-import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.dto.PointHistoryDTO;
+import io.hhplus.tdd.point.dto.UserPointDTO;
+import io.hhplus.tdd.point.entity.TransactionType;
+import io.hhplus.tdd.point.entity.UserPoint;
+import io.hhplus.tdd.point.repository.PointHistoryRepository;
+import io.hhplus.tdd.point.repository.UserPointRepository;
+import io.hhplus.tdd.point.util.PointManager;
+import io.hhplus.tdd.point.util.PointTableAccessOperator;
+import io.hhplus.tdd.point.util.PointTableAccessor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +25,13 @@ class PointManagerTest {
     private PointManager pointManager;
 
     @Mock
-    private UserPointTable userPointTable;
+    private UserPointRepository userPointRepository;
 
     @Mock
-    private PointHistoryTable pointHistoryTable;
+    private PointHistoryRepository pointHistoryRepository;
+
+    @Mock
+    private PointTableAccessor pointTableAccessor;
 
     private AutoCloseable closeable;
 
@@ -29,6 +39,10 @@ class PointManagerTest {
     void setUp() {
         this.closeable = MockitoAnnotations.openMocks(this);
         this.userPoint = new UserPoint(1, 1000, 1);
+        doAnswer( invocation -> {
+            PointTableAccessOperator operator = invocation.getArgument(1);
+            return operator.run();
+        }).when(this.pointTableAccessor).access(anyLong(), any(PointTableAccessOperator.class));
     }
 
     @AfterEach
@@ -39,54 +53,78 @@ class PointManagerTest {
     UserPoint userPoint;
 
     @Test
-    void incrementPoint_success() {
+    void accumulatePoint_success() {
         // Given
         this.userPoint = new UserPoint(1, 1000, 1);
         long incrementAmount = 2000;
+        TransactionType transactionType = TransactionType.CHARGE;
 
         given(
-                userPointTable.selectById(this.userPoint.id())
+                userPointRepository.selectById(this.userPoint.id())
         ).willReturn(
                 userPoint
         );
 
+        doAnswer( invocationOnMock -> {
+            UserPointDTO userPointDTO = invocationOnMock.getArgument(0);
+            return new UserPoint(
+                    userPointDTO.id(),
+                    userPointDTO.point(),
+                    System.currentTimeMillis()
+            );
+        }).when(this.userPointRepository).insertOrUpdate(any(UserPointDTO.class));
+
         // When
-        this.pointManager.incrementPoint(this.userPoint.id(), incrementAmount, TransactionType.CHARGE);
+        UserPoint accumulatedPoint = this.pointManager.accumulatePoint(
+                this.userPoint.id(),
+                incrementAmount,
+                transactionType
+        );
+        assertNotNull(accumulatedPoint);
 
         // Then
-        ArgumentCaptor<Long> amountCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<UserPointDTO> userPointDTOCaptor = ArgumentCaptor.forClass(UserPointDTO.class);
+        then(userPointRepository)
+                .should(atMostOnce())
+                .insertOrUpdate(
+                        userPointDTOCaptor.capture()
+                );
+        assertEquals(this.userPoint.id(), userPointDTOCaptor.getValue().id());
+        assertEquals(this.userPoint.point() + incrementAmount, userPointDTOCaptor.getValue().point());
 
-        then(userPointTable).should(atMostOnce()).insertOrUpdate(
-                anyLong(),
-                amountCaptor.capture()
-        );
-        assertEquals(this.userPoint.point() + incrementAmount, amountCaptor.getValue());
+        ArgumentCaptor<PointHistoryDTO> pointHistoryDTOCaptor = ArgumentCaptor.forClass(PointHistoryDTO.class);
+        then(pointHistoryRepository)
+                .should(atMostOnce())
+                .insert(
+                        pointHistoryDTOCaptor.capture()
+                );
+        assertEquals(this.userPoint.id(), pointHistoryDTOCaptor.getValue().userId());
+        assertEquals(incrementAmount, pointHistoryDTOCaptor.getValue().amount());
+        assertEquals(transactionType, pointHistoryDTOCaptor.getValue().type());
 
-        then(pointHistoryTable).should(atMostOnce()).insert(
-                anyLong(),
-                amountCaptor.capture(),
-                any(TransactionType.class),
-                anyLong()
-        );
-        assertEquals(incrementAmount, amountCaptor.getValue());
+        assertEquals(accumulatedPoint.updateMillis(), pointHistoryDTOCaptor.getValue().updateMillis());
     }
 
     @Test
-    void incrementPoint_fail_minusTotalAmount() {
+    void accumulatePoint_fail_minusTotalAmount() {
         // Given
         this.userPoint = new UserPoint(1, 1000, 1);
         long decrementAmount = -2000;
 
         given(
-                userPointTable.selectById(this.userPoint.id())
+                userPointRepository.selectById(this.userPoint.id())
         ).willReturn(
                 userPoint
         );
 
         // When
         assertThrows(
-                IllegalArgumentException.class,
-                () -> this.pointManager.incrementPoint(this.userPoint.id(), decrementAmount, TransactionType.USE)
+                IllegalStateException.class,
+                () -> this.pointManager.accumulatePoint(
+                        this.userPoint.id(),
+                        decrementAmount,
+                        TransactionType.USE
+                )
         );
     }
 }
