@@ -11,8 +11,11 @@
 
 ## 알아본 내용
 
-- monitor lock
-- 
+- monitor lock : Java의 고유 락
+- Compare and Swap(lock free 알고리즘)
+  - 기존 값과 변경할 값을 전달
+  - 기존 값과 메모리가 같다면 값을 변경하고 true 리턴
+  - 기존 값과 메모리가 다르다면 false 반환
 
 
 ## 해결책 후보 탐색
@@ -127,3 +130,11 @@ n명의 유저에 대해 각각 n번의 연산을 동시에 수행하는 함수�
 - Table Lock은 ReadWriteLock
 - 일방향으로 얻어가기 때문에 데드락 발생하지 않음
 - 읽기 요청에서 성능 향상 기대 가능
+
+### 배운 점
+- 동시성 제어 정책(Lock, synchronized, ConcurrentHashMap 등) 학습
+- 테스트에 있어 멱등성의 중요성
+- AOP 관점에서 동시성 코드 분리의 필요셩
+
+### 추가 개선점
+- 현재는 동시성 코드 실행을 lambda를 통하지만, annotation을 이용해서 더 깔끔하게 개선 가능
