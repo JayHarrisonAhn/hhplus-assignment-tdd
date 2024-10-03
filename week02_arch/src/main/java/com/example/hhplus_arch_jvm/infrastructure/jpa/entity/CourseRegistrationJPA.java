@@ -1,5 +1,6 @@
 package com.example.hhplus_arch_jvm.infrastructure.jpa.entity;
 
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -25,4 +26,13 @@ public class CourseRegistrationJPA {
     private Long coachId;
 
     private Long studentId;
+
+    public CourseRegistration toDomain() {
+        return CourseRegistration.builder()
+                .id(id)
+                .date(date)
+                .coachId(coachId)
+                .studentId(studentId)
+                .build();
+    }
 }

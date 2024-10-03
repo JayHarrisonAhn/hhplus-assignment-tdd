@@ -1,5 +1,6 @@
 package com.example.hhplus_arch_jvm.infrastructure.jpa.entity;
 
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,12 @@ public class CourseRegistrationCountJPA {
     private Integer count;
 
     private Integer max;
+
+    public CourseRegistrationCount toDomain() {
+        return CourseRegistrationCount.builder()
+                .courseId(courseId)
+                .count(count)
+                .max(max)
+                .build();
+    }
 }
