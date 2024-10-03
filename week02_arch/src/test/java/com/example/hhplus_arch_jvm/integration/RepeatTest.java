@@ -1,37 +1,38 @@
 package com.example.hhplus_arch_jvm.integration;
 
 import com.example.hhplus_arch_jvm.application.command.RegisterCourseCommand;
+import com.example.hhplus_arch_jvm.application.command.ViewRegisteredCourseCommand;
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.facade.CourseFacade;
-import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseRegistrationCountJPARepository;
-import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseRegistrationJPARepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ConcurrentTest {
+public class RepeatTest {
 
     @Autowired private CourseFacade courseFacade;
-    @Autowired private CourseRegistrationJPARepository courseRegistrationJPARepository;
-    @Autowired private CourseRegistrationCountJPARepository courseRegistrationCountJPARepository;
 
     @Autowired private TransactionTemplate template;
 
     @Test
-    void test40StudentsRegisterToOneCourse() {
+    void testRegister5TimesSimultaneously() {
         // Given
+        Long studentId = 100L;
         CourseInfo courseInfo = courseFacade.createCourse(
                 CourseInfo.builder()
                         .date(LocalDate.of(2025, 1, 1))
@@ -41,19 +42,20 @@ public class ConcurrentTest {
         );
 
         // When
-        ExecutorService executor = Executors.newFixedThreadPool(40);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         AtomicInteger registeredCount = new AtomicInteger(0);
-        for (long i = 1; i <= 40; i++) {
+        AtomicReference<LocalDateTime> registeredTime = new AtomicReference<>();
+        for (long i = 1; i <= 5; i++) {
             long taskId = i; // Assign a unique task number
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 System.out.println(taskId + "th student started to register on thread " + Thread.currentThread().getName());
                 try {
-                    courseFacade.registerCourse(new RegisterCourseCommand(
-                            courseInfo.getId(), taskId
+                    CourseRegistration registration = courseFacade.registerCourse(new RegisterCourseCommand(
+                            courseInfo.getId(), studentId
                     ));
                     registeredCount.incrementAndGet();
-                    System.out.println(taskId);
+                    registeredTime.set(registration.getCreatedAt());
                 } catch (IllegalStateException ignored) {
                 }
                 System.out.println(taskId + "th student finished to register");
@@ -66,11 +68,10 @@ public class ConcurrentTest {
         System.out.println("All tasks completed.");
 
         // Then
-        assertEquals(30, registeredCount.get());
-        template.execute( status -> {
-            assertEquals(30, courseRegistrationCountJPARepository.findByCourseIdIs(courseInfo.getId()).getCount());
-            assertEquals(30, courseRegistrationJPARepository.countByCourseIdEquals(courseInfo.getId()));
-            return null;
-        });
+        assertEquals(1, registeredCount.get());
+        assertEquals(registeredTime.get(), courseFacade
+                .viewRegisteredCourses(new ViewRegisteredCourseCommand(studentId))
+                .get(0)
+                .getRegisteredAt());
     }
 }
