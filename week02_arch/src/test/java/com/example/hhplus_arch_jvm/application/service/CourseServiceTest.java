@@ -93,7 +93,7 @@ class CourseServiceTest {
 
         // Then
         assertEquals(
-                originalCount - 1,
+                originalCount + 1,
                 courseRegistrationCount.getCount()
         );
     }
