@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class CourseService {
         CourseRegistration courseRegistration = CourseRegistration.builder()
                 .courseId(courseId)
                 .studentId(studentId)
-                .createdAt(new Date())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return this.courseRegistrationRepository

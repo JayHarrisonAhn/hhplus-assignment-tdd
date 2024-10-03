@@ -4,7 +4,7 @@ import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -14,7 +14,7 @@ import java.util.Date;
         uniqueConstraints = {
             @UniqueConstraint(
                     name = "",
-                    columnNames = {"date", "coachId", "studentId"}
+                    columnNames = {"courseId", "studentId"}
             )
         }
 )
@@ -22,15 +22,15 @@ import java.util.Date;
 public class CourseRegistrationJPA {
 
     @Id @GeneratedValue
-    private Long id;
+    private Long courseId;
 
     private Long studentId;
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     public CourseRegistration toDomain() {
         return CourseRegistration.builder()
-                .courseId(id)
+                .courseId(courseId)
                 .studentId(studentId)
                 .createdAt(createdAt)
                 .build();
@@ -38,7 +38,7 @@ public class CourseRegistrationJPA {
 
     static public CourseRegistrationJPA fromDomain(CourseRegistration domain) {
         CourseRegistrationJPA courseRegistration = new CourseRegistrationJPA();
-        courseRegistration.setId(domain.getCourseId());
+        courseRegistration.setCourseId(domain.getCourseId());
         courseRegistration.setStudentId(domain.getStudentId());
         courseRegistration.setCreatedAt(domain.getCreatedAt());
         return courseRegistration;

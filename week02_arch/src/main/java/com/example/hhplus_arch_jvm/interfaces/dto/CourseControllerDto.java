@@ -3,7 +3,7 @@ package com.example.hhplus_arch_jvm.interfaces.dto;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CourseControllerDto {
     public static class GetAllAvailableCourses {
@@ -28,7 +28,7 @@ public class CourseControllerDto {
         public record Response(
                 Long courseId,
                 Long studentId,
-                Date createdAt
+                LocalDateTime createdAt
         ) {}
     }
     public static class GetRegisteredCourses {
@@ -41,7 +41,7 @@ public class CourseControllerDto {
                 String name,
                 LocalDate date,
                 String description,
-                Date registeredAt
+                LocalDateTime registeredAt
         ) {}
     }
 }
