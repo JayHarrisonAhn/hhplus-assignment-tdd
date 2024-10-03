@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(
         uniqueConstraints = {
             @UniqueConstraint(
-                    name = "",
+                    name = "OneStudentPerCourse",
                     columnNames = {"courseId", "studentId"}
             )
         }
@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 public class CourseRegistrationJPA {
 
     @Id @GeneratedValue
+    private Long id;
+
     private Long courseId;
 
     private Long studentId;

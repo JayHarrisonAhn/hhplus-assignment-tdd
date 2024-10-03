@@ -3,6 +3,7 @@ package com.example.hhplus_arch_jvm.application.service;
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo;
 import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -49,6 +49,10 @@ public class CourseService {
                 .build();
 
         return this.courseRegistrationRepository
-                .createCourseRegistration(courseRegistration);
+                .save(courseRegistration);
+    }
+
+    public List<CourseRegistrationInfo> getRegisteredCourses(Long studentId) {
+        return this.courseRegistrationRepository.findAllByUserId(studentId);
     }
 }

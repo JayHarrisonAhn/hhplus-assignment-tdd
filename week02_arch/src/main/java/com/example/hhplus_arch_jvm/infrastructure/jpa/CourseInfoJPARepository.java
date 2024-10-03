@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface CourseJPARepository extends JpaRepository<CourseInfoJPA, Long> {
+public interface CourseInfoJPARepository extends JpaRepository<CourseInfoJPA, Long> {
 
     @Query("""
             SELECT c, r

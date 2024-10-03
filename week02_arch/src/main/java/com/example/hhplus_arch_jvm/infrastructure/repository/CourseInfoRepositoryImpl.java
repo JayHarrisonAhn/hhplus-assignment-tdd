@@ -2,7 +2,7 @@ package com.example.hhplus_arch_jvm.infrastructure.repository;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
-import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseJPARepository;
+import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseInfoJPARepository;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseInfoJPA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseInfoRepositoryImpl implements CourseInfoRepository {
 
-    private CourseJPARepository courseJPARepository;
+    private CourseInfoJPARepository courseInfoJPARepository;
 
     @Override
     public CourseInfo createCourse(CourseInfo courseInfo) {
@@ -25,7 +25,7 @@ public class CourseInfoRepositoryImpl implements CourseInfoRepository {
 
     @Override
     public List<CourseInfo> findAllByDateEqualsAndRegistrationCount(LocalDate date) {
-        return courseJPARepository.findAllByDateEqualsAndRegistrationCount(date).stream()
+        return courseInfoJPARepository.findAllByDateEqualsAndRegistrationCount(date).stream()
                 .map(CourseInfoJPA::toDomain)
                 .toList();
     }
