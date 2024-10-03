@@ -61,14 +61,14 @@ class CourseServiceTest {
                 .max(30)
                 .build();
 
-        // courseRegistrationCount save 시 parameter를 그대로 반환
+        // courseRegistrationCount save 시 입력을 그대로 출력
         doAnswer( invocationOnMock -> invocationOnMock.getArgument(0))
                 .when(this.courseRegistrationCountRepository)
                 .save(
                         any(CourseRegistrationCount.class)
                 );
 
-        // courseRegistrationCount save 시 example date 그대로 반환
+        // courseRegistrationCount find 시 example data 반환
         when(
                 this.courseRegistrationCountRepository.find(this.exampleCourseInfo.getId())
         ).thenReturn(this.exampleCourseRegistrationCount);
@@ -103,7 +103,6 @@ class CourseServiceTest {
         this.exampleCourseRegistrationCount.setCount(
                 this.exampleCourseRegistrationCount.getMax()
         );
-        Integer originalCount = this.exampleCourseRegistrationCount.getCount();
 
         // When, Then
         assertThrows(
