@@ -35,7 +35,7 @@ class CourseServiceTest {
     private CourseInfo exampleCourseInfo;
     private CourseRegistrationCount exampleCourseRegistrationCount;
 
-    ////// Tests //////
+    ////// Test Setups //////
     @BeforeEach
     void setUp() {
         this.closeable = MockitoAnnotations.openMocks(this);
@@ -46,6 +46,7 @@ class CourseServiceTest {
         closeable.close();
     }
 
+    ////// Tests //////
     void setUpExampleCourse() {
         // Example Data 삽입
         this.exampleCourseInfo = CourseInfo.builder()
