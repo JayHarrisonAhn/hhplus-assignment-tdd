@@ -28,4 +28,13 @@ public class CourseInfoJPA {
                 .description(description)
                 .build();
     }
+
+    static public CourseInfoJPA fromDomain(CourseInfo domain) {
+        CourseInfoJPA courseInfoJPA = new CourseInfoJPA();
+        courseInfoJPA.setId(domain.id());
+        courseInfoJPA.setName(domain.name());
+        courseInfoJPA.setDate(domain.date());
+        courseInfoJPA.setDescription(domain.description());
+        return courseInfoJPA;
+    }
 }

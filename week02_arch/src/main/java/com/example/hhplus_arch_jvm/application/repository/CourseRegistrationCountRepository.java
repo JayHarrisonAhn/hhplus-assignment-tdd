@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CourseRegistrationCountRepository {
 
-    CourseRegistrationCount createCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount);
-    CourseRegistrationCount findCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount);
-    CourseRegistrationCount updateCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount);
+    CourseRegistrationCount saveCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount);
+    CourseRegistrationCount findCourseRegistrationCount(Long courseId);
 }

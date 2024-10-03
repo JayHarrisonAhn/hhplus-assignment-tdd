@@ -2,11 +2,14 @@ package com.example.hhplus_arch_jvm.infrastructure.jpa.entity;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(
         uniqueConstraints = {
             @UniqueConstraint(
@@ -15,7 +18,7 @@ import java.time.LocalDate;
             )
         }
 )
-@Getter
+@Getter @Setter
 public class CourseRegistrationJPA {
 
     @Id @GeneratedValue

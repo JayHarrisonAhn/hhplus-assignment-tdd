@@ -2,20 +2,33 @@ package com.example.hhplus_arch_jvm.infrastructure.repository;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
+import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseRegistrationCountJPARepository;
+import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseRegistrationCountJPA;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
+@Primary
+@Component
+@RequiredArgsConstructor
 public class CourseRegistrationCountRepositoryImpl implements CourseRegistrationCountRepository {
+
+    private CourseRegistrationCountJPARepository courseRegistrationCountJPARepository;
+
     @Override
-    public CourseRegistrationCount createCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount) {
-        return null;
+    public CourseRegistrationCount saveCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount) {
+        CourseRegistrationCountJPA courseRegistrationCountJPA = CourseRegistrationCountJPA
+                .fromDomain(courseRegistrationCount);
+
+        return this.courseRegistrationCountJPARepository
+                .save(courseRegistrationCountJPA)
+                .toDomain();
     }
 
     @Override
-    public CourseRegistrationCount findCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount) {
-        return null;
-    }
-
-    @Override
-    public CourseRegistrationCount updateCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount) {
-        return null;
+    public CourseRegistrationCount findCourseRegistrationCount(Long courseId) {
+        return this.courseRegistrationCountJPARepository
+                .findByCourseIdIs(courseId)
+                .toDomain();
     }
 }

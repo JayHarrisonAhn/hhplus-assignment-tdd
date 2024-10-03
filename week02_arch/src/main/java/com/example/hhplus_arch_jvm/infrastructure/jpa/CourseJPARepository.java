@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface CourseJPARepository extends JpaRepository<CourseInfoJPA, Long> {
+
     @Query("""
             SELECT c, r
             FROM
@@ -20,5 +21,4 @@ public interface CourseJPARepository extends JpaRepository<CourseInfoJPA, Long> 
                 c.date=:date
             """)
     List<CourseInfoJPA> findAllByDateEqualsAndRegistrationCount(@Param("date") LocalDate date);
-
 }
