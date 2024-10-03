@@ -23,7 +23,7 @@ public class CourseService {
 
     public List<CourseInfo> getAvailableCourses(LocalDate date) {
         return this.courseInfoRepository
-                .findAllByDateEqualsAndRegistrationCount(date);
+                .findAllRegistrableByDate(date);
     }
 
     public CourseRegistrationCount decrementRegistrationCount(Long courseId) {
@@ -53,6 +53,6 @@ public class CourseService {
     }
 
     public List<CourseRegistrationInfo> getRegisteredCourses(Long studentId) {
-        return this.courseRegistrationRepository.findAllByUserId(studentId);
+        return this.courseInfoRepository.findAllRegisteredByStudentId(studentId);
     }
 }

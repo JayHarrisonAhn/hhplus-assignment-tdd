@@ -27,9 +27,4 @@ public class CourseRegistrationRepositoryImpl implements CourseRegistrationRepos
         );
         return course.toDomain();
     }
-
-    @Override
-    public List<CourseRegistrationInfo> findAllByUserId(Long studentId) {
-        return courseRegistrationJPARepository.findAllRegisteredCourseInfoByStudentId(studentId);
-    }
 }

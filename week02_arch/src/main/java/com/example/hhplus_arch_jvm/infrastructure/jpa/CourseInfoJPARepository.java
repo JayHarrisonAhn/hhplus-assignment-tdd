@@ -1,5 +1,6 @@
 package com.example.hhplus_arch_jvm.infrastructure.jpa;
 
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseInfoJPA;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,5 +21,19 @@ public interface CourseInfoJPARepository extends JpaRepository<CourseInfoJPA, Lo
             WHERE
                 c.date=:date
             """)
-    List<CourseInfoJPA> findAllByDateEqualsAndRegistrationCount(@Param("date") LocalDate date);
+    List<CourseInfoJPA> findAllRegistrableByDate(@Param("date") LocalDate date);
+
+    @Query("""
+            SELECT new com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo(
+                ci.id, ci.name, ci.date, ci.description, cr.createdAt
+            )
+            FROM
+                CourseRegistrationJPA cr
+                INNER JOIN
+                CourseInfoJPA ci
+                ON cr.courseId=ci.id
+            WHERE
+                cr.studentId=:studentId
+            """)
+    List<CourseRegistrationInfo> findAllRegisteredByStudentId(@Param("studentId") Long studentId);
 }

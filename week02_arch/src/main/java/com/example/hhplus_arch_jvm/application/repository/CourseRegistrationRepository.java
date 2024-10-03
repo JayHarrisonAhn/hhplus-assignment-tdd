@@ -10,5 +10,4 @@ import java.util.List;
 public interface CourseRegistrationRepository {
 
     CourseRegistration save(CourseRegistration courseRegistration);
-    List<CourseRegistrationInfo> findAllByUserId(Long userId);
 }

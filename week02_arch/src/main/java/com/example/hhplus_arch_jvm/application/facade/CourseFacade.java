@@ -30,6 +30,6 @@ public class CourseFacade {
     }
 
     public List<CourseRegistrationInfo> viewRegisteredCourses(ViewRegisteredCourseCommand command) {
-        return null;
+        return courseService.getRegisteredCourses(command.studentId());
     }
 }
