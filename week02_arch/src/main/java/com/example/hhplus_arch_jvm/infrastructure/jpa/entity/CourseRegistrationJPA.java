@@ -1,6 +1,7 @@
 package com.example.hhplus_arch_jvm.infrastructure.jpa.entity;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,5 +38,14 @@ public class CourseRegistrationJPA {
                 .coachId(coachId)
                 .studentId(studentId)
                 .build();
+    }
+
+    static public CourseRegistrationJPA fromDomain(CourseRegistration domain) {
+        CourseRegistrationJPA courseRegistration = new CourseRegistrationJPA();
+        courseRegistration.setId(domain.getId());
+        courseRegistration.setDate(domain.getDate());
+        courseRegistration.setCoachId(domain.getCoachId());
+        courseRegistration.setStudentId(domain.getStudentId());
+        return courseRegistration;
     }
 }

@@ -31,10 +31,10 @@ public class CourseInfoJPA {
 
     static public CourseInfoJPA fromDomain(CourseInfo domain) {
         CourseInfoJPA courseInfoJPA = new CourseInfoJPA();
-        courseInfoJPA.setId(domain.id());
-        courseInfoJPA.setName(domain.name());
-        courseInfoJPA.setDate(domain.date());
-        courseInfoJPA.setDescription(domain.description());
+        courseInfoJPA.setId(domain.getId());
+        courseInfoJPA.setName(domain.getName());
+        courseInfoJPA.setDate(domain.getDate());
+        courseInfoJPA.setDescription(domain.getDescription());
         return courseInfoJPA;
     }
 }

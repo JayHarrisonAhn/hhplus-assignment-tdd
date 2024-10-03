@@ -32,9 +32,9 @@ public class CourseRegistrationCountJPA {
 
     static public CourseRegistrationCountJPA fromDomain(CourseRegistrationCount domain) {
         CourseRegistrationCountJPA courseRegistrationCount = new CourseRegistrationCountJPA();
-        courseRegistrationCount.setCourseId(domain.courseId());
-        courseRegistrationCount.setCount(domain.count());
-        courseRegistrationCount.setMax(domain.max());
+        courseRegistrationCount.setCourseId(domain.getCourseId());
+        courseRegistrationCount.setCount(domain.getCount());
+        courseRegistrationCount.setMax(domain.getMax());
         return courseRegistrationCount;
     }
 }
