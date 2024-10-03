@@ -25,6 +25,10 @@ public class CourseService {
         CourseRegistrationCount courseRegistrationCount = this.courseRegistrationCountRepository
                 .find(courseId);
 
+        if (courseRegistrationCount.getCount() >= courseRegistrationCount.getMax()) {
+            throw new IllegalStateException("잔여 자리 없음");
+        }
+
         courseRegistrationCount.setCount(
                 courseRegistrationCount.getCount() - 1
         );

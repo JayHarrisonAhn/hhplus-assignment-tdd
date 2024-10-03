@@ -14,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 class CourseServiceTest {
@@ -77,18 +77,41 @@ class CourseServiceTest {
     @Test
     @DisplayName("성공 케이스")
     void decrementRegistrationCount_success() {
+        // Given
         this.setUpExampleCourse();
 
         Integer originalCount = this.exampleCourseRegistrationCount.getCount();
 
+        // When
         CourseRegistrationCount courseRegistrationCount = this.courseService
                 .decrementRegistrationCount(
                         this.exampleCourseInfo.getId()
                 );
 
+        // Then
         assertEquals(
                 originalCount - 1,
                 courseRegistrationCount.getCount()
+        );
+    }
+
+    @Test
+    @DisplayName("남은 자리가 없는 경우")
+    void decrementRegistrationCount_noAvailableSeat() {
+        // Given
+        this.setUpExampleCourse();
+        this.exampleCourseRegistrationCount.setCount(
+                this.exampleCourseRegistrationCount.getMax()
+        );
+        Integer originalCount = this.exampleCourseRegistrationCount.getCount();
+
+        // When, Then
+        assertThrows(
+                IllegalStateException.class,
+                () -> this.courseService
+                        .decrementRegistrationCount(
+                                this.exampleCourseInfo.getId()
+                        )
         );
     }
 }
