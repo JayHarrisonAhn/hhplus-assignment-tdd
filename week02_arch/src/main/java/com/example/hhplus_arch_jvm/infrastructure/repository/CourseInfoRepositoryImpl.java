@@ -19,11 +19,6 @@ public class CourseInfoRepositoryImpl implements CourseInfoRepository {
     private CourseInfoJPARepository courseInfoJPARepository;
 
     @Override
-    public CourseInfo createCourse(CourseInfo courseInfo) {
-        return null;
-    }
-
-    @Override
     public List<CourseInfo> findAllByDateEqualsAndRegistrationCount(LocalDate date) {
         return courseInfoJPARepository.findAllByDateEqualsAndRegistrationCount(date).stream()
                 .map(CourseInfoJPA::toDomain)

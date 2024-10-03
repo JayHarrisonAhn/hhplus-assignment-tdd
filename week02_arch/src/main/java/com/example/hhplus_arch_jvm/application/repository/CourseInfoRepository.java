@@ -9,6 +9,5 @@ import java.util.List;
 @Component
 public interface CourseInfoRepository {
 
-    CourseInfo createCourse(CourseInfo courseInfo);
     List<CourseInfo> findAllByDateEqualsAndRegistrationCount(LocalDate date);
 }
