@@ -18,14 +18,14 @@ public class CourseInfoJPA {
 
     LocalDate date;
 
-    String description;
+    String coachDescription;
 
     public CourseInfo toDomain() {
         return CourseInfo.builder()
                 .id(id)
                 .name(name)
                 .date(date)
-                .description(description)
+                .coachDescription(coachDescription)
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class CourseInfoJPA {
         courseInfoJPA.setId(domain.getId());
         courseInfoJPA.setName(domain.getName());
         courseInfoJPA.setDate(domain.getDate());
-        courseInfoJPA.setDescription(domain.getDescription());
+        courseInfoJPA.setCoachDescription(domain.getCoachDescription());
         return courseInfoJPA;
     }
 }

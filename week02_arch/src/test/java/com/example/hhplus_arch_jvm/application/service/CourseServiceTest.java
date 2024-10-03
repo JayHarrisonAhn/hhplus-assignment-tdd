@@ -3,10 +3,8 @@ package com.example.hhplus_arch_jvm.application.service;
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
-import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
-import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseRegistrationJPA;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +55,7 @@ class CourseServiceTest {
                 .id(1L)
                 .date(LocalDate.of(2024, 10, 1))
                 .name("테스트 특강")
-                .description("어쩌구저쩌구")
+                .coachDescription("어쩌구저쩌구")
                 .build();
 
         this.exampleCourseRegistrationCount = CourseRegistrationCount.builder()

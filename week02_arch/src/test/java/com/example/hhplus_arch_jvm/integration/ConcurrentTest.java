@@ -35,8 +35,8 @@ public class ConcurrentTest {
         CourseInfo courseInfo = courseFacade.createCourse(
                 CourseInfo.builder()
                         .date(LocalDate.of(2025, 1, 1))
-                        .name("타일러 코치의 영어 잘하는 법")
-                        .description("")
+                        .name("하반기 취업 특강")
+                        .coachDescription("타일러 코치")
                         .build()
         );
 

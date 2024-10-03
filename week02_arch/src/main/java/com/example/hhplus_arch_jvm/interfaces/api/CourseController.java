@@ -32,7 +32,7 @@ public class CourseController {
                         .id(c.getId())
                         .name(c.getName())
                         .date(c.getDate())
-                        .description(c.getDescription())
+                        .coachDescription(c.getCoachDescription())
                         .build()
         ).toList();
     }
@@ -68,7 +68,7 @@ public class CourseController {
                         .id(c.getId())
                         .name(c.getName())
                         .date(c.getDate())
-                        .description(c.getDescription())
+                        .coachDescription(c.getCoachDescription())
                         .build()
         ).toList();
     }

@@ -15,7 +15,7 @@ public class CourseControllerDto {
                 Long id,
                 String name,
                 LocalDate date,
-                String description
+                String coachDescription
         ) {}
     }
     public static class RegisterCourse {
@@ -39,7 +39,7 @@ public class CourseControllerDto {
                 Long id,
                 String name,
                 LocalDate date,
-                String description,
+                String coachDescription,
                 LocalDateTime registeredAt
         ) {}
     }

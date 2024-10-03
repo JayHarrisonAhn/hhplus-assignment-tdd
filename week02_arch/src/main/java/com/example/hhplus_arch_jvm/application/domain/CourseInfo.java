@@ -16,5 +16,5 @@ public class CourseInfo {
     Long id;
     String name;
     LocalDate date;
-    String description;
+    String coachDescription;
 }

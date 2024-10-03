@@ -25,7 +25,7 @@ public interface CourseInfoJPARepository extends JpaRepository<CourseInfoJPA, Lo
 
     @Query("""
             SELECT new com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo(
-                ci.id, ci.name, ci.date, ci.description, cr.createdAt
+                ci.id, ci.name, ci.date, ci.coachDescription, cr.createdAt
             )
             FROM
                 CourseRegistrationJPA cr
