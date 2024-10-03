@@ -139,7 +139,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("addCourseRegistration : 실패")
+    @DisplayName("addCourseRegistration : 실패 - 이미 신청한 경우")
     void addCourseRegistration_alreadyRegistered() {
         // Given
         Long courseId = 1L;
