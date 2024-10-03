@@ -16,7 +16,7 @@ public class CourseRegistrationCountRepositoryImpl implements CourseRegistration
     private CourseRegistrationCountJPARepository courseRegistrationCountJPARepository;
 
     @Override
-    public CourseRegistrationCount saveCourseRegistrationCount(CourseRegistrationCount courseRegistrationCount) {
+    public CourseRegistrationCount save(CourseRegistrationCount courseRegistrationCount) {
         CourseRegistrationCountJPA courseRegistrationCountJPA = CourseRegistrationCountJPA
                 .fromDomain(courseRegistrationCount);
 
@@ -26,7 +26,7 @@ public class CourseRegistrationCountRepositoryImpl implements CourseRegistration
     }
 
     @Override
-    public CourseRegistrationCount findCourseRegistrationCount(Long courseId) {
+    public CourseRegistrationCount find(Long courseId) {
         return this.courseRegistrationCountJPARepository
                 .findByCourseIdIs(courseId)
                 .toDomain();
