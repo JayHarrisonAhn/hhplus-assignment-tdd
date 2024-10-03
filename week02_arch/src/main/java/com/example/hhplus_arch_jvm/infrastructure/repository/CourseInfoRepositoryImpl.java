@@ -5,7 +5,7 @@ import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo;
 import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseInfoJPARepository;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseInfoJPA;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Primary
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CourseInfoRepositoryImpl implements CourseInfoRepository {
 
     private CourseInfoJPARepository courseInfoJPARepository;
@@ -22,6 +22,13 @@ public class CourseInfoRepositoryImpl implements CourseInfoRepository {
     @Override
     public List<CourseRegistrationInfo> findAllRegisteredByStudentId(Long studentId) {
         return courseInfoJPARepository.findAllRegisteredByStudentId(studentId);
+    }
+
+    @Override
+    public CourseInfo save(CourseInfo courseInfo) {
+        return courseInfoJPARepository.save(
+                CourseInfoJPA.fromDomain(courseInfo)
+        ).toDomain();
     }
 
     @Override

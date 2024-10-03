@@ -4,7 +4,7 @@ import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.CourseRegistrationJPARepository;
 import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseRegistrationJPA;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Primary
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CourseRegistrationRepositoryImpl implements CourseRegistrationRepository {
 
     private CourseRegistrationJPARepository courseRegistrationJPARepository;
