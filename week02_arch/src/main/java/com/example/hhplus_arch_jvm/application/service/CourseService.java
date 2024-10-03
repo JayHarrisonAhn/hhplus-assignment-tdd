@@ -21,6 +21,20 @@ public class CourseService {
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final CourseRegistrationCountRepository courseRegistrationCountRepository;
 
+    public CourseInfo createCourseInfo(CourseInfo courseInfo) {
+        return this.courseInfoRepository.save(courseInfo);
+    }
+
+    public CourseRegistrationCount createCourseRegistrationCount(Long courseId) {
+        return this.courseRegistrationCountRepository.save(
+                CourseRegistrationCount.builder()
+                        .courseId(courseId)
+                        .count(0)
+                        .max(30)
+                        .build()
+        );
+    }
+
     public List<CourseInfo> getAvailableCourses(LocalDate date) {
         return this.courseInfoRepository
                 .findAllRegistrableByDate(date);

@@ -10,6 +10,7 @@ import java.util.List;
 @Component
 public interface CourseInfoRepository {
 
+    CourseInfo save(CourseInfo courseInfo);
     List<CourseInfo> findAllRegistrableByDate(LocalDate date);
     List<CourseRegistrationInfo> findAllRegisteredByStudentId(Long studentId);
 }

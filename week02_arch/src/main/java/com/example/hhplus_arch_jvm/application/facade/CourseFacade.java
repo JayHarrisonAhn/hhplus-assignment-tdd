@@ -32,4 +32,10 @@ public class CourseFacade {
     public List<CourseRegistrationInfo> viewRegisteredCourses(ViewRegisteredCourseCommand command) {
         return courseService.getRegisteredCourses(command.studentId());
     }
+
+    public CourseInfo createCourse(CourseInfo courseInfo) {
+        CourseInfo createdCourseInfo = courseService.createCourseInfo(courseInfo);
+        courseService.createCourseRegistrationCount(createdCourseInfo.getId());
+        return courseInfo;
+    }
 }
