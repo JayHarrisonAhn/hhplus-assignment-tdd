@@ -1,13 +1,22 @@
 package com.example.hhplus_arch_jvm.interfaces.dto;
 
+import lombok.Builder;
+
 import java.time.LocalDate;
+import java.util.Date;
 
 public class CourseControllerDto {
     public static class GetAllAvailableCourses {
         public record Request(
                 LocalDate date
         ) {}
-        public record Response() {}
+        @Builder
+        public record Response(
+                Long id,
+                String name,
+                LocalDate date,
+                String description
+        ) {}
     }
     public static class RegisterCourse {
         public record Request(
@@ -15,12 +24,24 @@ public class CourseControllerDto {
                 long courseId,
                 LocalDate date
         ) {}
-        public record Response() {}
+        @Builder
+        public record Response(
+                Long courseId,
+                Long studentId,
+                Date createdAt
+        ) {}
     }
     public static class GetRegisteredCourses {
         public record Request(
                 long userId
         ) {}
-        public record Response() {}
+        @Builder
+        public record Response(
+                Long id,
+                String name,
+                LocalDate date,
+                String description,
+                Date registeredAt
+        ) {}
     }
 }

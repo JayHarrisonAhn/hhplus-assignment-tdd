@@ -4,6 +4,7 @@ import com.example.hhplus_arch_jvm.application.command.RegisterCourseCommand;
 import com.example.hhplus_arch_jvm.application.command.ViewRegisteredCourseCommand;
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationInfo;
 import com.example.hhplus_arch_jvm.application.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class CourseFacade {
         return courseService.addCourseRegistration(command.courseId(), command.userId());
     }
 
-    public List<CourseRegistration> viewRegisteredCourses(ViewRegisteredCourseCommand command) {
+    public List<CourseRegistrationInfo> viewRegisteredCourses(ViewRegisteredCourseCommand command) {
         return null;
     }
 }
