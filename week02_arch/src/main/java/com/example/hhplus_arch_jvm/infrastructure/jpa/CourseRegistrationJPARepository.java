@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface CourseRegistrationJPARepository extends JpaRepository<CourseRegistrationJPA, Long> {
 
     Optional<CourseRegistrationJPA> findByCourseIdEqualsAndStudentIdEquals(Long courseId, Long studentId);
+
+    Integer countByCourseIdEquals(Long courseId);
 }

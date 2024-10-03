@@ -49,7 +49,7 @@ public class CourseService {
         }
 
         courseRegistrationCount.setCount(
-                courseRegistrationCount.getCount() - 1
+                courseRegistrationCount.getCount() + 1
         );
 
         return this.courseRegistrationCountRepository.save(courseRegistrationCount);

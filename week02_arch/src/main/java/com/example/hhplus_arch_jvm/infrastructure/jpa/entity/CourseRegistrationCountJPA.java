@@ -11,11 +11,10 @@ import lombok.Setter;
 public class CourseRegistrationCountJPA {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", insertable = false, updatable = false)
+    @JoinColumn(name = "courseId")
     private CourseInfoJPA course;
 
     private Integer count;

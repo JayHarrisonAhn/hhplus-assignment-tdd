@@ -17,7 +17,7 @@ public interface CourseInfoJPARepository extends JpaRepository<CourseInfoJPA, Lo
                 CourseInfoJPA c
                 INNER JOIN
                 CourseRegistrationCountJPA r
-                ON c.id=r.course.id
+                ON c.id=r.courseId
             WHERE
                 c.date=:date
             """)

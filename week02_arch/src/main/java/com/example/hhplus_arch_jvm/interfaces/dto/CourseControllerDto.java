@@ -21,8 +21,7 @@ public class CourseControllerDto {
     public static class RegisterCourse {
         public record Request(
                 long userId,
-                long courseId,
-                LocalDate date
+                long courseId
         ) {}
         @Builder
         public record Response(

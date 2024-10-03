@@ -14,8 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class CourseFacade {
 
     private final CourseService courseService;
@@ -36,6 +36,6 @@ public class CourseFacade {
     public CourseInfo createCourse(CourseInfo courseInfo) {
         CourseInfo createdCourseInfo = courseService.createCourseInfo(courseInfo);
         courseService.createCourseRegistrationCount(createdCourseInfo.getId());
-        return courseInfo;
+        return createdCourseInfo;
     }
 }
