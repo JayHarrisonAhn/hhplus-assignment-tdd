@@ -6,12 +6,14 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(
-                name = "",
-                columnNames = {"date", "coachId", "studentId"}
-        )
-})
+@Table(
+        uniqueConstraints = {
+            @UniqueConstraint(
+                    name = "",
+                    columnNames = {"date", "coachId", "studentId"}
+            )
+        }
+)
 @Getter
 public class CourseRegistrationJPA {
 

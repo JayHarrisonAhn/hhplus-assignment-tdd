@@ -4,9 +4,17 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter @Setter
-public class StudentUserJPA extends UserJPA {
+public class CourseJPA {
 
-    private Integer generation;
+    @Id @GeneratedValue
+    Long id;
+
+    String name;
+
+    LocalDate date;
+
 }
