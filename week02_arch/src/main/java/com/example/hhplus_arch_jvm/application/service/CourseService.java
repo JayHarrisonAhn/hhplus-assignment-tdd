@@ -1,19 +1,23 @@
 package com.example.hhplus_arch_jvm.application.service;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
+import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CourseService {
     private final CourseInfoRepository courseInfoRepository;
+    private final CourseRegistrationRepository courseRegistrationRepository;
     private final CourseRegistrationCountRepository courseRegistrationCountRepository;
 
     public List<CourseInfo> getAvailableCourses(LocalDate date) {
@@ -34,5 +38,16 @@ public class CourseService {
         );
 
         return this.courseRegistrationCountRepository.save(courseRegistrationCount);
+    }
+
+    public CourseRegistration addCourseRegistration(Long courseId, Long studentId) {
+        CourseRegistration courseRegistration = CourseRegistration.builder()
+                .courseId(courseId)
+                .studentId(studentId)
+                .createdAt(new Date())
+                .build();
+
+        return this.courseRegistrationRepository
+                .createCourseRegistration(courseRegistration);
     }
 }

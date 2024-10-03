@@ -4,13 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Builder
 @Getter @Setter
 public class CourseRegistration {
-    Long id;
-    LocalDate date;
-    Long coachId;
+    Long courseId;
     Long studentId;
+    Date createdAt;
 }

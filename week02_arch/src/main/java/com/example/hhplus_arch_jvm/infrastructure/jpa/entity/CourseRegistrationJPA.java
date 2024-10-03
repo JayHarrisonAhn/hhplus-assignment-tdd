@@ -1,11 +1,10 @@
 package com.example.hhplus_arch_jvm.infrastructure.jpa.entity;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
-import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Builder
@@ -25,27 +24,23 @@ public class CourseRegistrationJPA {
     @Id @GeneratedValue
     private Long id;
 
-    private LocalDate date;
-
-    private Long coachId;
-
     private Long studentId;
+
+    private Date createdAt;
 
     public CourseRegistration toDomain() {
         return CourseRegistration.builder()
-                .id(id)
-                .date(date)
-                .coachId(coachId)
+                .courseId(id)
                 .studentId(studentId)
+                .createdAt(createdAt)
                 .build();
     }
 
     static public CourseRegistrationJPA fromDomain(CourseRegistration domain) {
         CourseRegistrationJPA courseRegistration = new CourseRegistrationJPA();
-        courseRegistration.setId(domain.getId());
-        courseRegistration.setDate(domain.getDate());
-        courseRegistration.setCoachId(domain.getCoachId());
+        courseRegistration.setId(domain.getCourseId());
         courseRegistration.setStudentId(domain.getStudentId());
+        courseRegistration.setCreatedAt(domain.getCreatedAt());
         return courseRegistration;
     }
 }
