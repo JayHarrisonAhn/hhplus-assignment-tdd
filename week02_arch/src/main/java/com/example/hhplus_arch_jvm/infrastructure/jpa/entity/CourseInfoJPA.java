@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter @Setter
-public class CourseJPA {
+public class CourseInfoJPA {
 
     @Id @GeneratedValue
     Long id;

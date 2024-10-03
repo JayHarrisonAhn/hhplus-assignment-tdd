@@ -2,7 +2,7 @@ package com.example.hhplus_arch_jvm.application.facade;
 
 import com.example.hhplus_arch_jvm.application.command.RegisterCourseCommand;
 import com.example.hhplus_arch_jvm.application.command.ViewRegisteredCourseCommand;
-import com.example.hhplus_arch_jvm.application.domain.Course;
+import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class CourseFacade {
 
-    public List<Course> viewAvailableCourses(LocalDate date) {
+    public List<CourseInfo> viewAvailableCourses(LocalDate date) {
         return null;
     }
 

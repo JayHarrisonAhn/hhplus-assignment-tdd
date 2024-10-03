@@ -1,6 +1,6 @@
 package com.example.hhplus_arch_jvm.infrastructure.repository;
 
-import com.example.hhplus_arch_jvm.application.domain.Course;
+import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import com.example.hhplus_arch_jvm.application.repository.CourseRepository;
@@ -24,12 +24,12 @@ public class CourseRepositoryImpl implements CourseRepository {
     private final CourseRegistrationCountJPARepository courseRegistrationCountJPARepository;
 
     @Override
-    public Course createCourse(Course course) {
+    public CourseInfo createCourse(CourseInfo courseInfo) {
         return null;
     }
 
     @Override
-    public List<Course> findAllCourseByRegistrationCountLessThanRegistrationMaxAndDateEquals(LocalDate date) {
+    public List<CourseInfo> findAllCourseByRegistrationCountLessThanRegistrationMaxAndDateEquals(LocalDate date) {
         return List.of();
     }
 

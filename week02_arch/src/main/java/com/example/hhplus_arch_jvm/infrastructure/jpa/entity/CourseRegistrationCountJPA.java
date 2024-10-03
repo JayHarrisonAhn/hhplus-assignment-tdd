@@ -14,7 +14,7 @@ public class CourseRegistrationCountJPA {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId", insertable = false, updatable = false)
-    private CourseJPA course;
+    private CourseInfoJPA course;
 
     private Integer count;
 
