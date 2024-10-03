@@ -1,10 +1,11 @@
 package com.example.hhplus_arch_jvm.application.domain;
 
-public class CourseRegistrationCount {
+import lombok.Builder;
 
-    private Long courseId;
-
-    private Long count;
-
-    private Long max;
+@Builder
+public record CourseRegistrationCount(
+        Long courseId,
+        Long count,
+        Long max
+) {
 }
