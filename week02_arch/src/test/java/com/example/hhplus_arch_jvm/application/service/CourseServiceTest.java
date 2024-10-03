@@ -1,9 +1,12 @@
 package com.example.hhplus_arch_jvm.application.service;
 
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
+import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
 import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
+import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
+import com.example.hhplus_arch_jvm.infrastructure.jpa.entity.CourseRegistrationJPA;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -23,7 +27,7 @@ class CourseServiceTest {
 
     ////// Mock Setups //////
     @Mock
-    private CourseInfoRepository courseInfoRepository;
+    private CourseRegistrationRepository courseRegistrationRepository;
 
     @Mock
     private CourseRegistrationCountRepository courseRegistrationCountRepository;
@@ -38,7 +42,7 @@ class CourseServiceTest {
     ////// Test Setups //////
     @BeforeEach
     void setUp() {
-        this.closeable = MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
@@ -76,7 +80,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("성공 케이스")
+    @DisplayName("decrementRegistrationCount : 성공")
     void decrementRegistrationCount_success() {
         // Given
         this.setUpExampleCourse();
@@ -97,7 +101,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("남은 자리가 없는 경우")
+    @DisplayName("decrementRegistrationCount : 실패 - 남은 자리가 없는 경우")
     void decrementRegistrationCount_noAvailableSeat() {
         // Given
         this.setUpExampleCourse();
@@ -112,6 +116,50 @@ class CourseServiceTest {
                         .decrementRegistrationCount(
                                 this.exampleCourseInfo.getId()
                         )
+        );
+    }
+
+    // 아래서부터는 읽기 쉽게 작성(위에 코드는 시간 없어서 수정 못함 ㅠㅠ)
+    @Test
+    @DisplayName("addCourseRegistration : 성공")
+    void addCourseRegistration_success() {
+        // Given
+        Long courseId = 1L;
+        Long studentId = 2L;
+        doAnswer( invocationOnMock -> invocationOnMock.getArgument(0))
+                .when(this.courseRegistrationRepository)
+                .save(
+                        any(CourseRegistration.class)
+                );
+
+        // When
+        CourseRegistration registration = courseService.addCourseRegistration(courseId, studentId);
+
+        // Then
+        assertEquals(courseId, registration.getCourseId());
+        assertEquals(studentId, registration.getStudentId());
+    }
+
+    @Test
+    @DisplayName("addCourseRegistration : 실패")
+    void addCourseRegistration_alreadyRegistered() {
+        // Given
+        Long courseId = 1L;
+        Long studentId = 2L;
+
+        CourseRegistration existingRegistration = mock(CourseRegistration.class);
+        when(existingRegistration.getCourseId()).thenReturn(courseId);
+        when(existingRegistration.getStudentId()).thenReturn(studentId);
+
+        when(
+                courseRegistrationRepository.find(existingRegistration.getCourseId(), existingRegistration.getStudentId())
+        ).thenReturn(Optional.of(existingRegistration));
+
+        // When, Then
+        assertThrows(
+                IllegalStateException.class,
+                () -> this.courseService
+                        .addCourseRegistration(courseId, studentId)
         );
     }
 }

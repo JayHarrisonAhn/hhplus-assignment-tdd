@@ -42,6 +42,11 @@ public class CourseService {
     }
 
     public CourseRegistration addCourseRegistration(Long courseId, Long studentId) {
+        this.courseRegistrationRepository.find(courseId, studentId)
+                .ifPresent( __ -> {
+                    throw new IllegalStateException("이미 신청내역이 존재합니다");
+                });
+
         CourseRegistration courseRegistration = CourseRegistration.builder()
                 .courseId(courseId)
                 .studentId(studentId)
