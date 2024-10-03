@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CourseJPARepository extends JpaRepository<CourseInfoJPA, Long> {
     @Query("""
-            SELECT c
+            SELECT c, r
             FROM
                 CourseInfoJPA c
                 INNER JOIN
