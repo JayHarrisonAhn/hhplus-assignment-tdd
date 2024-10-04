@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Primary
 @Component
@@ -18,6 +19,11 @@ import java.util.List;
 public class CourseInfoRepositoryImpl implements CourseInfoRepository {
 
     private CourseInfoJPARepository courseInfoJPARepository;
+
+    @Override
+    public Optional<CourseInfo> find(Long courseId) {
+        return courseInfoJPARepository.findById(courseId).map(CourseInfoJPA::toDomain);
+    }
 
     @Override
     public List<CourseRegistrationInfo> findAllRegisteredByStudentId(Long studentId) {

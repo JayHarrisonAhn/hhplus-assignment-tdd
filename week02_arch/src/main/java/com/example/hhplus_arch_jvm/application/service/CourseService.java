@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +68,13 @@ public class CourseService {
                 .studentId(studentId)
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        CourseInfo courseInfo = this.courseInfoRepository.find(courseId)
+                .orElseThrow(() -> new NoSuchElementException(""));
+
+        if (courseInfo.getDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("이미 진행된 강의입니다.");
+        }
 
         return this.courseRegistrationRepository
                 .save(courseRegistration);

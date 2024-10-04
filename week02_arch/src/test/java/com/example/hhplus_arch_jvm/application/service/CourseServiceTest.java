@@ -3,6 +3,7 @@ package com.example.hhplus_arch_jvm.application.service;
 import com.example.hhplus_arch_jvm.application.domain.CourseInfo;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistration;
 import com.example.hhplus_arch_jvm.application.domain.CourseRegistrationCount;
+import com.example.hhplus_arch_jvm.application.repository.CourseInfoRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationCountRepository;
 import com.example.hhplus_arch_jvm.application.repository.CourseRegistrationRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +26,9 @@ class CourseServiceTest {
     private CourseService courseService;
 
     ////// Mock Setups //////
+    @Mock
+    private CourseInfoRepository courseInfoRepository;
+
     @Mock
     private CourseRegistrationRepository courseRegistrationRepository;
 
@@ -124,11 +129,21 @@ class CourseServiceTest {
         // Given
         Long courseId = 1L;
         Long studentId = 2L;
+
         doAnswer( invocationOnMock -> invocationOnMock.getArgument(0))
                 .when(this.courseRegistrationRepository)
                 .save(
                         any(CourseRegistration.class)
                 );
+
+        CourseInfo courseInfo = mock(CourseInfo.class);
+        when(courseInfo.getId()).thenReturn(courseId);
+        when(courseInfo.getName()).thenReturn("테스트 강의");
+        when(courseInfo.getDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        when(
+                courseInfoRepository.find(courseId)
+        ).thenReturn(Optional.of(courseInfo));
 
         // When
         CourseRegistration registration = courseService.addCourseRegistration(courseId, studentId);
@@ -156,6 +171,49 @@ class CourseServiceTest {
         // When, Then
         assertThrows(
                 IllegalStateException.class,
+                () -> this.courseService
+                        .addCourseRegistration(courseId, studentId)
+        );
+    }
+
+    @Test
+    @DisplayName("addCourseRegistration : 실패 - 이미 진행된 코스를 신청하는 경우")
+    void addCourseRegistration_afterCourseDate() {
+        // Given
+        Long courseId = 1L;
+        Long studentId = 2L;
+
+        CourseInfo courseInfo = mock(CourseInfo.class);
+        when(courseInfo.getId()).thenReturn(courseId);
+        when(courseInfo.getName()).thenReturn("테스트 강의");
+        when(courseInfo.getDate()).thenReturn(LocalDate.now().minusDays(1));
+
+        when(
+                courseInfoRepository.find(courseId)
+        ).thenReturn(Optional.of(courseInfo));
+
+        // When, Then
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.courseService
+                        .addCourseRegistration(courseId, studentId)
+        );
+    }
+
+    @Test
+    @DisplayName("addCourseRegistration : 실패 - 존재하지 않는 코스를 신청하는 경우")
+    void addCourseRegistration_noCourseExists() {
+        // Given
+        Long courseId = 1L;
+        Long studentId = 2L;
+
+        when(
+                courseInfoRepository.find(courseId)
+        ).thenReturn(Optional.empty());
+
+        // When, Then
+        assertThrows(
+                NoSuchElementException.class,
                 () -> this.courseService
                         .addCourseRegistration(courseId, studentId)
         );
