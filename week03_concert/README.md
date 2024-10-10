@@ -4,7 +4,13 @@
 - 여러 콘서트를 대상으로 예매 시스템을 구축하기 위한 구조 설계
 - 다량의 트래픽 증가를 염두에 두고 대기열 시스템을 통해 접속량 통제
 
-## 필요기능
+## 목차
+- [요구사항 분석 및 시퀀스 다이어그램](#요구사항-분석-및-시퀀스-다이어그램)
+- [플로우차트](#플로우차트)
+- [마일스톤](#마일스톤)
+- [ERD](#ERD)
+
+## 요구사항 분석 및 시퀀스 다이어그램
 ### 대기열
 아래의 기능에 접근하기 위한 토큰을 발급한다.
 
@@ -167,10 +173,10 @@ sequenceDiagram
     end
 ```
 
-# Flow Chart
+## 플로우차트
 ![Flow Chart Image](docs/flowchart.svg)
 
-# 마일스톤
+## 마일스톤
 최종 기간 : 3주차~5주차
 
 모든 기능의 완성에는 테스트까지를 포함
@@ -205,7 +211,19 @@ gantt
     좌석 점유 및 결제 로직 제작(Pay모듈 활용): task8, 2023-10-21, 2d
 ```
 
-# ERD
+## ERD
+
+- Foreign Key에 관하여
+  - Database의 정규화와 데이터 보호 등을 위해서는 Foreign Key를 설정해야 한다.
+  - 하지만 현실적으로는 DB Lock에 의한 Foreign key의 연쇄 lock 등으로 인해 DB 성능이 급격히 감소한다.
+  - 따라서 논리적 Foreign Key만을 설정하고, 실제 DB에는 Foreign Key와 JPA mapping을 설정하지 않았다.
+- ConcertSeat에 관하여
+  - ConcertSeat Table에는 userId, payHistoryId, occupiedAt이 존재한다.
+  - seat를 점유했을 시, userId와 occupiedAt의 값을 채워넣는다
+  - seat를 결제할 시, 결제 정보를 payHistoryId에 채워넣는다
+  - 결제 없이 점유가 해제되었을 경우, userId와 occupiedAt을 null로 채워넣는다.
+  - 이를 통해 유저가 보유한 여러 payHistory중, 어떤 것이 어떤 자리를 위한 결제 내역인지 파악할 수 있다.
+
 ```mermaid
 erDiagram
 "Concert" {
