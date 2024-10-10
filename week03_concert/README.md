@@ -260,4 +260,5 @@ erDiagram
 "ConcertSeat" }o--o| "User": occupy
 "PayBalance" ||--|| "User": balance-amount
 "PayHistory" }o--|| "User": pay
+"Token" |o--|| "User": has
 ```
