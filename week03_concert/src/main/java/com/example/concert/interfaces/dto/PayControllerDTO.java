@@ -9,7 +9,7 @@ public class PayControllerDTO {
         @Getter public static class Request {
             Long userId;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             Long balance;
         }
     }

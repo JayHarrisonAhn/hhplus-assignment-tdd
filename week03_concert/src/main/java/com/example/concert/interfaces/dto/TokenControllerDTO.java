@@ -10,7 +10,7 @@ public class TokenControllerDTO {
         @Getter public static class Request {
             Long userId;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             TokenDTO token;
         }
     }
@@ -20,7 +20,7 @@ public class TokenControllerDTO {
             Long userId;
             String token;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             TokenDTO token;
         }
     }

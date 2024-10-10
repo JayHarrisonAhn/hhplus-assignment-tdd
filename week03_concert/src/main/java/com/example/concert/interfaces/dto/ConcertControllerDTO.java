@@ -14,7 +14,7 @@ public class ConcertControllerDTO {
         @Getter public static class Request {
             String token;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             List<ConcertTimeslotDTO> timeSlots;
         }
     }
@@ -23,7 +23,7 @@ public class ConcertControllerDTO {
         @Getter public static class Request {
             String token;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             List<ConcertSeatDTO> seats;
         }
     }
@@ -33,7 +33,7 @@ public class ConcertControllerDTO {
             Long userId;
             String token;
         }
-        @Builder public static class Response {
+        @Builder @Getter public static class Response {
             ConcertSeatDTO seat;
         }
     }

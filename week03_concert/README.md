@@ -280,3 +280,8 @@ erDiagram
 "PayHistory" }o--|| "User": pay
 "Token" |o--|| "User": has
 ```
+
+## API 명세
+Swagger를 이용하여 API 명세를 문서화하였습니다.
+
+![Swagger API List](docs/swagger.png)
