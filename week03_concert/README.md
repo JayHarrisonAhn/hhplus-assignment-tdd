@@ -285,4 +285,5 @@ erDiagram
 ## API 명세
 Swagger를 이용하여 API 명세를 문서화하였습니다.
 
-[Swagger API List](docs/Swagger.pdf)
+[Swagger Full API List pdf](docs/swagger.pdf)
+![Swagger List Capture](docs/swagger.png)
