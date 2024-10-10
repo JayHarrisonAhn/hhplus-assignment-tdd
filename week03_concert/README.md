@@ -56,9 +56,9 @@ sequenceDiagram
 
 ### 예약 가능 좌석
 1. 대기열 토큰 검증(if `토큰의 status가 ACTIVE가 아님` -> 거부, else -> 다음 단계)
-2. 콘서트 좌석 예매 테이블 필요 : id, concertTimeId, seatId, price, userId, status(empty, holding, paid)
+2. 콘서트 좌석 예매 테이블 필요 : id, concertTimeId, seatId, price, userId, payHistoryId, occupiedAt
    1. unique index 필요 : concertTimeId와 seatId 
-3. 콘서트 좌석 예매 테이블 중, concertTimeId에 해당하면서 status가 empty인 것들을 모두 리턴
+3. 콘서트 좌석 예매 테이블 중, concertTimeId에 해당하면서 userId가 null인 것들을 모두 리턴
 
 ```mermaid
 sequenceDiagram
@@ -73,8 +73,8 @@ sequenceDiagram
     alt 토큰 상태가 ACTIVE가 아닌 경우
         API -->> User: 접근 거부 (유효하지 않은 토큰)
     else 토큰 상태가 ACTIVE인 경우
-        API ->> Concert: 해당 concertTimeslotId의 좌석 정보 조회(status값 포함)
-        Concert -->> API: 좌석 목록 반환
+        API ->> Concert: 해당 concertTimeslotId의 좌석 정보 조회
+        Concert -->> API: 좌석 목록 반환(userId가 null인 것들만)
         API -->> User: 좌석 목록 전달
     end
 ```
@@ -83,7 +83,7 @@ sequenceDiagram
 1. 대기열 토큰 검증(if `토큰의 status가 ACTIVE가 아님` -> 거부, else -> 다음 단계)
 2. 콘서트 좌석 예매 테이블
     1. 동시성 제어 필요 : 비관적 락
-3. if `id에 해당하는 row의 status가 empty이면` -> userId를 설정하고, status를 holding으로 변경
+3. if `id에 해당하는 row의 status가 empty이면` -> userId를 설정하고, occupiedAt을 현재 시간으로 설정
 
 ```mermaid
 sequenceDiagram
@@ -103,7 +103,7 @@ sequenceDiagram
         alt 좌석 상태가 EMPTY가 아닌 경우
             API -->> User: 좌석 예매 실패 (이미 예약된 좌석)
         else 좌석 상태가 EMPTY인 경우
-            API ->> Concert: status를 holding으로 업데이트 및 userId 설정
+            API ->> Concert: userId 및 occupiedAt 설정
             Concert -->> API: 업데이트 완료
             API -->> User: 좌석 예매 성공
         end
@@ -159,7 +159,7 @@ sequenceDiagram
             else
                 API ->> Payment: 잔액 차감
                 Payment -->> API: 잔액 업데이트 완료
-                API ->> Concert: 좌석 상태를 paid로 업데이트
+                API ->> Concert: 좌석 payHistory를 업데이트
                 Concert -->> API: 업데이트 완료
                 API -->> User: 결제 성공
             end
@@ -203,4 +203,61 @@ gantt
     콘서트 정보 추가 로직 제작   : task6, 2023-10-18, 2d
     콘서트 타임슬롯 및 좌석 확인 로직 제작 : task7, 2023-10-20, 1d
     좌석 점유 및 결제 로직 제작(Pay모듈 활용): task8, 2023-10-21, 2d
+```
+
+# ERD
+```mermaid
+erDiagram
+"Concert" {
+    Long id
+}
+"ConcertTimeslot" {
+    Long id
+    Long concertId
+    LocalDateTime concertStartTime
+    LocalDateTime reservationStartTime
+}
+"ConcertSeat" {
+    Long id
+    Long concertTimeslotId
+    String seatId
+    Long price
+    Long userId "nullable"
+    Long payHistoryId "nullable"
+    DateTime occupiedAt "nullable"
+}
+"ConcertTimeslotOccupancy" {
+    Long concertTimeslotId
+    Integer maxSeatAmount
+    Integer occupiedSeatAmount
+}
+"PayBalance" {
+    Long id
+    Long userId
+    Long balance
+}
+"PayHistory" {
+    Long id
+    Long userId
+    Long amount
+    LocalDateTime createdAt
+}
+"Token" {
+    String token
+    Long userId
+    TokenStatus status
+    LocalDateTime createdAt
+    LocalDateTime updatedAt
+}
+"User" {
+    Long id
+    String username
+}
+"Concert" ||--|{ "ConcertTimeslot" : hold
+"ConcertTimeslot" ||--|| "ConcertTimeslotOccupancy": occupancy
+"ConcertTimeslot" ||--|{ "ConcertSeat": seat
+"ConcertSeat" ||--o| "PayHistory": pay-seat
+"ConcertSeat" }o--o| "User": occupy
+"PayBalance" ||--|| "User": balance-amount
+"PayHistory" }o--|| "User": pay
 ```
