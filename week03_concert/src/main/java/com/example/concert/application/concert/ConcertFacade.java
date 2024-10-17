@@ -6,6 +6,7 @@ import com.example.concert.application.balance.BalanceService;
 import com.example.concert.application.token.TokenService;
 import com.example.concert.application.user.UserService;
 import com.example.concert.domain.*;
+import com.example.concert.domain.token.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,19 +22,25 @@ public class ConcertFacade {
     private final BalanceService balanceService;
     private final TokenService tokenService;
 
-    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
+    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId, String tokenString) {
+        tokenService.validateActiveStatus(tokenString);
+
         Concert concert = concertService.findConcert(concertId);
 
         return concertService.findConcertTimeslots(concert.getId());
     }
 
-    public List<ConcertSeat> findConcertSeats(Long timeslotId) {
+    public List<ConcertSeat> findConcertSeats(Long timeslotId, String tokenString) {
+        tokenService.validateActiveStatus(tokenString);
+
         ConcertTimeslot timeslot = concertService.findConcertTimeslot(timeslotId);
 
         return concertService.findConcertSeats(timeslot.getId());
     }
 
-    public ConcertSeat occupyConcertSeat(Long seatId, Long userId) {
+    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, String tokenString) {
+        tokenService.validateActiveStatus(tokenString);
+
         User user = userService.findByUserId(userId);
 
         ConcertSeat seat = concertService.findConcertSeat(seatId);
@@ -43,7 +50,9 @@ public class ConcertFacade {
         return seat;
     }
 
-    public ConcertSeatPayInfo paySeat(Long seatId, Long userId) {
+    public ConcertSeatPayInfo paySeat(Long seatId, Long userId, String tokenString) {
+        tokenService.validateActiveStatus(tokenString);
+
         ConcertSeat seat = this.concertService.findConcertSeat(seatId);
 
         BalanceHistory balanceHistory = this.balanceService.pay(userId, seat.getPrice());

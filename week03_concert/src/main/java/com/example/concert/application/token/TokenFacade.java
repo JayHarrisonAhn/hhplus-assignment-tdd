@@ -16,7 +16,9 @@ public class TokenFacade {
         return this.tokenService.issue(userId);
     }
 
-    public Token check(Long userId, UUID tokenString) {
-        return this.tokenService.check(userId, tokenString);
+    public Token check(Long userId, String tokenString) {
+        Token token = this.tokenService.check(tokenString);
+        token.validateUser(userId);
+        return token;
     }
 }

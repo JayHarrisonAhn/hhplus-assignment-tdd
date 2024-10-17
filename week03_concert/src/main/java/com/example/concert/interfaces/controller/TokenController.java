@@ -38,7 +38,7 @@ public class TokenController {
     ) {
         Token token = this.tokenFacade.check(
                 request.getUserId(),
-                UUID.fromString(request.getToken())
+                request.getToken()
         );
         return Check.Response.builder()
                 .token(TokenDTO.from(token))

@@ -17,7 +17,7 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    Token issue(Long userId) {
+    public Token issue(Long userId) {
         LocalDateTime now = LocalDateTime.now();
 
         Token token = Token.builder()
@@ -32,14 +32,17 @@ public class TokenService {
         return token;
     }
 
-    Token check(Long userId, UUID tokenString) {
-        Token token = this.tokenRepository.findByToken(tokenString)
+    public Token check(String tokenString) {
+        return this.tokenRepository.findByToken(UUID.fromString(tokenString))
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found"));
+    }
 
-        if (!token.getUserId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found");
+    public void validateActiveStatus(String tokenString) {
+        Token token = this.check(tokenString);
+
+        if (token.getStatus() != TokenStatus.ACTIVE) {
+            throw new IllegalStateException("Token is not active");
         }
-        
-        return token;
+
     }
 }
