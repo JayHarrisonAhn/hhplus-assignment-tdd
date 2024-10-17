@@ -30,8 +30,4 @@ public class Token {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    public void validate() {
-
-    }
 }

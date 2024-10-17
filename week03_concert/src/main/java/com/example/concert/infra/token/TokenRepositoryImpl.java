@@ -2,6 +2,7 @@ package com.example.concert.infra.token;
 
 import com.example.concert.application.token.repository.TokenRepository;
 import com.example.concert.domain.Token;
+import com.example.concert.domain.enums.TokenStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,9 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public Optional<Token> findByUserId(Long userId) {
         return tokenRepository.findByUserId(userId);
+    }
+
+    public Integer countAllByStatus(TokenStatus status) {
+        return tokenRepository.countAllByStatusIs(status);
     }
 }
