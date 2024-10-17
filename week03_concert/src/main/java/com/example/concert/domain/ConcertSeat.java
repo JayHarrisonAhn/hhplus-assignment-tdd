@@ -29,6 +29,8 @@ public class ConcertSeat {
     @Column(name = "seatId")
     String seatId;
 
+    Long price;
+
     @Nullable
     Long userId;
 
@@ -41,5 +43,9 @@ public class ConcertSeat {
     public void occupy(Long userId, LocalDateTime occupiedAt) {
         this.userId = userId;
         this.occupiedAt = occupiedAt;
+    }
+
+    public void pay(Long payHistoryId) {
+        this.payHistoryId = payHistoryId;
     }
 }

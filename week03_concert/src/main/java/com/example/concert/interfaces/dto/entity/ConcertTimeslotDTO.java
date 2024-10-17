@@ -1,6 +1,6 @@
 package com.example.concert.interfaces.dto.entity;
 
-import com.example.concert.application.concert.dto.ConcertTimeslotWithOccupancy;
+import com.example.concert.domain.dto.ConcertTimeslotWithOccupancy;
 import lombok.Builder;
 import lombok.Getter;
 

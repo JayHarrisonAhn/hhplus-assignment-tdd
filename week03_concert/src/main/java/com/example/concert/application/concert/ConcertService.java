@@ -1,12 +1,10 @@
 package com.example.concert.application.concert;
 
-import com.example.concert.application.concert.dto.ConcertTimeslotWithOccupancy;
+import com.example.concert.domain.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.application.concert.repository.ConcertRepository;
 import com.example.concert.application.concert.repository.ConcertSeatRepository;
 import com.example.concert.application.concert.repository.ConcertTimeslotRepository;
-import com.example.concert.domain.Concert;
-import com.example.concert.domain.ConcertSeat;
-import com.example.concert.domain.ConcertTimeslot;
+import com.example.concert.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

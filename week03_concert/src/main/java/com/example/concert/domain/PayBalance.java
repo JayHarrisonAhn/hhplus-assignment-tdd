@@ -22,4 +22,12 @@ public class PayBalance {
     private Long userId;
 
     private Long balance;
+
+    public void accumulateBalance(Long amount) {
+        if (balance + amount < 0) {
+            throw new IllegalStateException("Amount less than balance");
+        }
+
+        this.balance += amount;
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.concert.application.concert.dto;
+package com.example.concert.domain.dto;
 
 import java.time.LocalDateTime;
 

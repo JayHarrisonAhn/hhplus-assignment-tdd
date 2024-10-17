@@ -1,8 +1,8 @@
 package com.example.concert.interfaces.controller;
 
 import com.example.concert.application.concert.ConcertFacade;
-import com.example.concert.application.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.domain.ConcertSeat;
+import com.example.concert.domain.dto.ConcertSeatPayInfo;
 import com.example.concert.interfaces.dto.ConcertControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -63,7 +62,10 @@ public class ConcertController {
             @PathVariable("timeSlotId") Long timeSlotId,
             @PathVariable("seatId") Long seatId
     ) {
-        ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(seatId, request.getUserId());
+        ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(
+                seatId,
+                request.getUserId()
+        );
         return OccupySeat.Response.builder()
                 .seat(
                         ConcertSeatDTO.from(occupiedSeat)
@@ -76,24 +78,18 @@ public class ConcertController {
             PayReservation.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
-            @PathVariable("seatId") String seatId
+            @PathVariable("seatId") Long seatId
     ) {
+        ConcertSeatPayInfo concertSeatPayInfo = this.concertFacade.paySeat(
+                seatId,
+                request.getUserId()
+        );
         return PayReservation.Response.builder()
                 .seat(
-                        ConcertSeatDTO.builder()
-                                .id(1L)
-                                .concertTimeslotId(timeSlotId)
-                                .seatId(seatId)
-                                .isEmpty(Boolean.FALSE)
-                                .build()
+                        ConcertSeatDTO.from(concertSeatPayInfo.seat())
                 )
                 .payHistory(
-                        PayHistoryDTO.builder()
-                                .id(1L)
-                                .userId(request.getUserId())
-                                .amount(1000L)
-                                .createdAt(LocalDateTime.now())
-                                .build()
+                        PayHistoryDTO.from(concertSeatPayInfo.payHistory())
                 )
                 .build();
     }
