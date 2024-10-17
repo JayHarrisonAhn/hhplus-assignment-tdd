@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -43,6 +44,17 @@ public class TokenService {
         if (token.getStatus() != TokenStatus.ACTIVE) {
             throw new IllegalStateException("Token is not active");
         }
+    }
 
+    public void activateTokens(Integer amount) {
+        LocalDateTime now = LocalDateTime.now();
+        for (int i = 0; i < amount; i++) {
+            Optional<Token> token = this.tokenRepository.findTopByStatusEqualsOrderByCreatedAtDesc(TokenStatus.WAIT);
+            if (token.isPresent()) {
+                token.get().activate(now);
+            } else {
+                break;
+            }
+        }
     }
 }

@@ -37,4 +37,9 @@ public class Token {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found");
         }
     }
+
+    public void activate(LocalDateTime updatedAt) {
+        this.status = TokenStatus.ACTIVE;
+        this.updatedAt = updatedAt;
+    }
 }

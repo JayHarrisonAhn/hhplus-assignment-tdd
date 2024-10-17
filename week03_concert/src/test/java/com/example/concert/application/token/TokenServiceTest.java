@@ -3,6 +3,7 @@ package com.example.concert.application.token;
 import com.example.concert.application.token.repository.TokenRepository;
 import com.example.concert.domain.token.Token;
 import com.example.concert.domain.token.TokenStatus;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ class TokenServiceTest {
     TokenRepository tokenRepository;
 
     @Test
+    @DisplayName("토큰 발급 성공 : 해피케이스")
     void success_issue() {
         assertDoesNotThrow( () -> {
             tokenService.issue(123L);
@@ -33,6 +35,7 @@ class TokenServiceTest {
     }
 
     @Test
+    @DisplayName("토큰 인증 성공 : 해피케이스")
     void success_validateActiveStatus() {
         // Given
         UUID tokenString = UUID.randomUUID();
@@ -51,6 +54,7 @@ class TokenServiceTest {
     }
 
     @Test
+    @DisplayName("토큰 인증 실패 : WAIT일 때")
     void fail_validateActiveStatus() {
         // Given
         UUID tokenString = UUID.randomUUID();

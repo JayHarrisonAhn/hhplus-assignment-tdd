@@ -17,6 +17,15 @@ public class BalanceService {
     private final BalanceRepository balanceRepository;
     private final BalanceHistoryRepository balanceHistoryRepository;
 
+    public Balance createBalance(Long userId) {
+        return balanceRepository.save(
+                Balance.builder()
+                        .userId(userId)
+                        .balance(0L)
+                        .build()
+        );
+    }
+
     public Balance viewBalance(Long userId) {
         return balanceRepository.findByUserId(userId)
                 .orElseThrow(() -> new NoSuchElementException("No balance found for user " + userId));

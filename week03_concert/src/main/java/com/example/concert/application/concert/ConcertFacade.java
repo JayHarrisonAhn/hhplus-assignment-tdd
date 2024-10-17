@@ -7,6 +7,7 @@ import com.example.concert.application.token.TokenService;
 import com.example.concert.application.user.UserService;
 import com.example.concert.domain.*;
 import com.example.concert.domain.token.Token;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class ConcertFacade {
 
     private final ConcertService concertService;
