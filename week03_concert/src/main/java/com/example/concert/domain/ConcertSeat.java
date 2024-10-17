@@ -41,7 +41,7 @@ public class ConcertSeat {
     LocalDateTime occupiedAt;
 
     public void occupy(Long userId, LocalDateTime occupiedAt) {
-        if (this.userId != null) {
+        if (this.occupiedAt != null && this.occupiedAt.plusMinutes(10).isAfter(LocalDateTime.now())) {
             throw new IllegalStateException("Seat is already occupied");
         }
         this.userId = userId;
