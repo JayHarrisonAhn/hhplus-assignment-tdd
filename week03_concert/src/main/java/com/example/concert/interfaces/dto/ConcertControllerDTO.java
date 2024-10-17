@@ -2,7 +2,7 @@ package com.example.concert.interfaces.dto;
 
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
-import com.example.concert.interfaces.dto.entity.PayHistoryDTO;
+import com.example.concert.interfaces.dto.entity.BalanceHistoryDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -45,7 +45,7 @@ public class ConcertControllerDTO {
         }
         @Builder @Getter public static class Response {
             ConcertSeatDTO seat;
-            PayHistoryDTO payHistory;
+            BalanceHistoryDTO payHistory;
         }
     }
 }

@@ -1,15 +1,16 @@
 package com.example.concert.interfaces.controller;
 
+import com.example.concert.application.concert.ConcertFacade;
+import com.example.concert.domain.ConcertSeat;
+import com.example.concert.domain.dto.ConcertSeatPayInfo;
 import com.example.concert.interfaces.dto.ConcertControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
-import com.example.concert.interfaces.dto.entity.PayHistoryDTO;
+import com.example.concert.interfaces.dto.entity.BalanceHistoryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,23 +18,21 @@ import java.util.List;
 @RequestMapping("/concert")
 public class ConcertController {
 
+    private final ConcertFacade concertFacade;
+
     @GetMapping("/{concertId}/timeSlot")
     @Operation(summary = "콘서트 시간 확인", description = "콘서트 시간과 각 시간별 잔여 좌석 갯수를 조회합니다.")
     GetAvailableTimeslots.Response getAvailableTimeslots(
             GetAvailableTimeslots.Request request,
             @PathVariable("concertId") Long concertId
     ) {
-        List<ConcertTimeslotDTO> dummyTimeslots = new ArrayList<>();
-        dummyTimeslots.add(
-                ConcertTimeslotDTO.builder()
-                        .id(1L)
-                        .concertId(concertId)
-                        .concertStartTime(LocalDateTime.of(2024, 12, 1, 12, 0))
-                        .reservationStartTime(LocalDateTime.of(2024, 11, 1, 12, 0))
-                        .build()
-        );
+        List<ConcertTimeslotDTO> timeslots = concertFacade.findConcertTimeslots(concertId, request.getToken())
+                .stream()
+                .map(ConcertTimeslotDTO::from)
+                .toList();
+
         return GetAvailableTimeslots.Response.builder()
-                .timeSlots(dummyTimeslots)
+                .timeSlots(timeslots)
                 .build();
     }
 
@@ -44,17 +43,13 @@ public class ConcertController {
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId
     ) {
-        List<ConcertSeatDTO> dummySeats = new ArrayList<>();
-        dummySeats.add(
-                ConcertSeatDTO.builder()
-                        .id(1L)
-                        .concertTimeslotId(timeSlotId)
-                        .seatId("5D")
-                        .isEmpty(Boolean.TRUE)
-                        .build()
-        );
+        List<ConcertSeatDTO> seats = concertFacade.findConcertSeats(timeSlotId, request.getToken())
+                .stream()
+                .map(ConcertSeatDTO::from)
+                .toList();
+
         return GetAvailableSeats.Response.builder()
-                .seats(dummySeats)
+                .seats(seats)
                 .build();
     }
 
@@ -64,16 +59,16 @@ public class ConcertController {
             OccupySeat.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
-            @PathVariable("seatId") String seatId
+            @PathVariable("seatId") Long seatId
     ) {
+        ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(
+                seatId,
+                request.getUserId(),
+                request.getToken()
+        );
         return OccupySeat.Response.builder()
                 .seat(
-                        ConcertSeatDTO.builder()
-                                .id(1L)
-                                .concertTimeslotId(timeSlotId)
-                                .seatId(seatId)
-                                .isEmpty(Boolean.FALSE)
-                                .build()
+                        ConcertSeatDTO.from(occupiedSeat)
                 ).build();
     }
 
@@ -83,24 +78,19 @@ public class ConcertController {
             PayReservation.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
-            @PathVariable("seatId") String seatId
+            @PathVariable("seatId") Long seatId
     ) {
+        ConcertSeatPayInfo concertSeatPayInfo = this.concertFacade.paySeat(
+                seatId,
+                request.getUserId(),
+                request.getToken()
+        );
         return PayReservation.Response.builder()
                 .seat(
-                        ConcertSeatDTO.builder()
-                                .id(1L)
-                                .concertTimeslotId(timeSlotId)
-                                .seatId(seatId)
-                                .isEmpty(Boolean.FALSE)
-                                .build()
+                        ConcertSeatDTO.from(concertSeatPayInfo.seat())
                 )
                 .payHistory(
-                        PayHistoryDTO.builder()
-                                .id(1L)
-                                .userId(request.getUserId())
-                                .amount(1000L)
-                                .createdAt(LocalDateTime.now())
-                                .build()
+                        BalanceHistoryDTO.from(concertSeatPayInfo.balanceHistory())
                 )
                 .build();
     }
