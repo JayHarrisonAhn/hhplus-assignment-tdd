@@ -4,4 +4,6 @@ import com.example.concert.domain.ConcertTimeslotOccupancy;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConcertTimeslotOccupancyRepository extends JpaRepository<ConcertTimeslotOccupancy, Long> {
+
+    ConcertTimeslotOccupancy findByConcertTimeslotId(Long concertTimeslotId);
 }

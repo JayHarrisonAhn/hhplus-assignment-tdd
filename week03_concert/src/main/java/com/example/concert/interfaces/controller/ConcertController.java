@@ -1,5 +1,7 @@
 package com.example.concert.interfaces.controller;
 
+import com.example.concert.application.concert.ConcertFacade;
+import com.example.concert.application.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.interfaces.dto.ConcertControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
@@ -17,23 +19,21 @@ import java.util.List;
 @RequestMapping("/concert")
 public class ConcertController {
 
+    private final ConcertFacade concertFacade;
+
     @GetMapping("/{concertId}/timeSlot")
     @Operation(summary = "콘서트 시간 확인", description = "콘서트 시간과 각 시간별 잔여 좌석 갯수를 조회합니다.")
     GetAvailableTimeslots.Response getAvailableTimeslots(
             GetAvailableTimeslots.Request request,
             @PathVariable("concertId") Long concertId
     ) {
-        List<ConcertTimeslotDTO> dummyTimeslots = new ArrayList<>();
-        dummyTimeslots.add(
-                ConcertTimeslotDTO.builder()
-                        .id(1L)
-                        .concertId(concertId)
-                        .concertStartTime(LocalDateTime.of(2024, 12, 1, 12, 0))
-                        .reservationStartTime(LocalDateTime.of(2024, 11, 1, 12, 0))
-                        .build()
-        );
+        List<ConcertTimeslotDTO> timeslots = concertFacade.findConcertTimeslots(concertId)
+                .stream()
+                .map(ConcertTimeslotDTO::from)
+                .toList();
+
         return GetAvailableTimeslots.Response.builder()
-                .timeSlots(dummyTimeslots)
+                .timeSlots(timeslots)
                 .build();
     }
 
