@@ -2,7 +2,7 @@ package com.example.concert.application.concert;
 
 import com.example.concert.domain.dto.ConcertSeatPayInfo;
 import com.example.concert.domain.dto.ConcertTimeslotWithOccupancy;
-import com.example.concert.application.pay.PayService;
+import com.example.concert.application.balance.BalanceService;
 import com.example.concert.application.token.TokenService;
 import com.example.concert.application.user.UserService;
 import com.example.concert.domain.*;
@@ -18,7 +18,7 @@ public class ConcertFacade {
 
     private final ConcertService concertService;
     private final UserService userService;
-    private final PayService payService;
+    private final BalanceService balanceService;
     private final TokenService tokenService;
 
     public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
@@ -46,13 +46,13 @@ public class ConcertFacade {
     public ConcertSeatPayInfo paySeat(Long seatId, Long userId) {
         ConcertSeat seat = this.concertService.findConcertSeat(seatId);
 
-        PayHistory payHistory = this.payService.pay(userId, seat.getPrice());
+        BalanceHistory balanceHistory = this.balanceService.pay(userId, seat.getPrice());
 
-        seat.pay(payHistory.getId());
+        seat.pay(balanceHistory.getId());
 
         return ConcertSeatPayInfo.builder()
                 .seat(seat)
-                .payHistory(payHistory)
+                .balanceHistory(balanceHistory)
                 .build();
     }
 }

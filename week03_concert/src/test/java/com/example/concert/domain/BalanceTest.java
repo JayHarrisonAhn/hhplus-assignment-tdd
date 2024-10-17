@@ -9,13 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class PayBalanceTest {
+class BalanceTest {
 
-    PayBalance payBalance;
+    Balance balance;
 
     @BeforeEach
     void setUp() {
-        this.payBalance = PayBalance.builder()
+        this.balance = Balance.builder()
                 .id(1L)
                 .userId(2L)
                 .balance(0L)
@@ -26,8 +26,8 @@ class PayBalanceTest {
     @DisplayName("잔고 변경 성공 : 해피케이스")
     void deductBalance_success() {
         assertDoesNotThrow( () -> {
-            payBalance.accumulateBalance(+5000L);
-            payBalance.accumulateBalance(-5000L);
+            balance.accumulateBalance(+5000L);
+            balance.accumulateBalance(-5000L);
         });
     }
 
@@ -35,11 +35,11 @@ class PayBalanceTest {
     @DisplayName("잔고 변경 실패 : 잔고 부족")
     void deductBalance_fail_minusBalance() {
         assertDoesNotThrow( () -> {
-            payBalance.accumulateBalance(+5000L);
+            balance.accumulateBalance(+5000L);
         });
         assertThrows(
                 IllegalStateException.class, () -> {
-                    payBalance.accumulateBalance(-5001L);
+                    balance.accumulateBalance(-5001L);
                 }
         );
     }

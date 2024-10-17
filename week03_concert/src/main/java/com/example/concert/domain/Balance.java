@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PayBalance {
+public class Balance {
 
     @Id
     @GeneratedValue

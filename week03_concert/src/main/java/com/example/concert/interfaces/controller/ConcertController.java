@@ -6,12 +6,11 @@ import com.example.concert.domain.dto.ConcertSeatPayInfo;
 import com.example.concert.interfaces.dto.ConcertControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
-import com.example.concert.interfaces.dto.entity.PayHistoryDTO;
+import com.example.concert.interfaces.dto.entity.BalanceHistoryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -89,7 +88,7 @@ public class ConcertController {
                         ConcertSeatDTO.from(concertSeatPayInfo.seat())
                 )
                 .payHistory(
-                        PayHistoryDTO.from(concertSeatPayInfo.payHistory())
+                        BalanceHistoryDTO.from(concertSeatPayInfo.balanceHistory())
                 )
                 .build();
     }

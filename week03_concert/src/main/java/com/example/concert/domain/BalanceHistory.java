@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PayHistory {
+public class BalanceHistory {
 
     @Id
     @GeneratedValue
