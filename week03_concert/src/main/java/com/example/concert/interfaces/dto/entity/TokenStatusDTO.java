@@ -1,6 +1,6 @@
 package com.example.concert.interfaces.dto.entity;
 
-import com.example.concert.domain.enums.TokenStatus;
+import com.example.concert.domain.token.TokenStatus;
 
 public enum TokenStatusDTO {
     WAIT,

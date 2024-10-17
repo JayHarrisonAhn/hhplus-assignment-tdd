@@ -1,17 +1,14 @@
 package com.example.concert.application.token.repository;
 
-import com.example.concert.domain.Token;
-import com.example.concert.domain.enums.TokenStatus;
-import org.springframework.stereotype.Component;
+import com.example.concert.domain.token.Token;
+import com.example.concert.domain.token.TokenStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
-public interface TokenRepository {
-
-    public Token save(Token token);
-    public Optional<Token> findByToken(UUID tokenString);
-    public Optional<Token> findByUserId(Long userId);
-    public Integer countAllByStatus(TokenStatus status);
+public interface TokenRepository extends JpaRepository<Token, Long> {
+    Optional<Token> findByToken(UUID token);
+    Optional<Token> findByUserId(Long userId);
+    Integer countAllByStatusIs(TokenStatus status);
 }

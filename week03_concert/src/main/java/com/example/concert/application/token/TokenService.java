@@ -1,10 +1,9 @@
 package com.example.concert.application.token;
 
 import com.example.concert.application.token.repository.TokenRepository;
-import com.example.concert.domain.Token;
-import com.example.concert.domain.enums.TokenStatus;
+import com.example.concert.domain.token.Token;
+import com.example.concert.domain.token.TokenStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;

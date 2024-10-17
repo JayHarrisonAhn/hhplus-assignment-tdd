@@ -1,6 +1,6 @@
 package com.example.concert.application.token;
 
-import com.example.concert.domain.Token;
+import com.example.concert.domain.token.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

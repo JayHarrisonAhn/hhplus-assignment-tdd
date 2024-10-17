@@ -1,7 +1,7 @@
 package com.example.concert.interfaces.controller;
 
 import com.example.concert.application.token.TokenFacade;
-import com.example.concert.domain.Token;
+import com.example.concert.domain.token.Token;
 import com.example.concert.interfaces.dto.TokenControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.TokenDTO;
 import io.swagger.v3.oas.annotations.Operation;

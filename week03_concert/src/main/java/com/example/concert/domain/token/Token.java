@@ -1,6 +1,5 @@
-package com.example.concert.domain;
+package com.example.concert.domain.token;
 
-import com.example.concert.domain.enums.TokenStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

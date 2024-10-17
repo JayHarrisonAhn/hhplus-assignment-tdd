@@ -1,6 +1,6 @@
 package com.example.concert.interfaces.dto.entity;
 
-import com.example.concert.domain.Token;
+import com.example.concert.domain.token.Token;
 import lombok.Builder;
 import lombok.Getter;
 
