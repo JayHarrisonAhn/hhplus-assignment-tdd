@@ -37,4 +37,9 @@ public class ConcertSeat {
 
     @Nullable
     LocalDateTime occupiedAt;
+
+    public void occupy(Long userId, LocalDateTime occupiedAt) {
+        this.userId = userId;
+        this.occupiedAt = occupiedAt;
+    }
 }

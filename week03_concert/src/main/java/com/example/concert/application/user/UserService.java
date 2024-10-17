@@ -5,6 +5,7 @@ import com.example.concert.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -13,7 +14,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    User createUser(String username) {
+    public User createUser(String username) {
         User user = User.builder()
                 .username(username)
                 .build();
@@ -23,7 +24,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    Optional<User> findByUserId(Long userId) {
-        return userRepository.findById(userId);
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("No user found with id: " + userId));
     }
 }

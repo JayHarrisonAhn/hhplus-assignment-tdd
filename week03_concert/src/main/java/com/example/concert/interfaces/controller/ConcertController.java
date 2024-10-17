@@ -2,6 +2,7 @@ package com.example.concert.interfaces.controller;
 
 import com.example.concert.application.concert.ConcertFacade;
 import com.example.concert.application.concert.dto.ConcertTimeslotWithOccupancy;
+import com.example.concert.domain.ConcertSeat;
 import com.example.concert.interfaces.dto.ConcertControllerDTO.*;
 import com.example.concert.interfaces.dto.entity.ConcertSeatDTO;
 import com.example.concert.interfaces.dto.entity.ConcertTimeslotDTO;
@@ -60,16 +61,12 @@ public class ConcertController {
             OccupySeat.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
-            @PathVariable("seatId") String seatId
+            @PathVariable("seatId") Long seatId
     ) {
+        ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(seatId, request.getUserId());
         return OccupySeat.Response.builder()
                 .seat(
-                        ConcertSeatDTO.builder()
-                                .id(1L)
-                                .concertTimeslotId(timeSlotId)
-                                .seatId(seatId)
-                                .isEmpty(Boolean.FALSE)
-                                .build()
+                        ConcertSeatDTO.from(occupiedSeat)
                 ).build();
     }
 

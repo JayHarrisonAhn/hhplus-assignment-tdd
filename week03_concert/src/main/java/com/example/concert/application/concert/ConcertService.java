@@ -38,4 +38,9 @@ public class ConcertService {
     List<ConcertSeat> findConcertSeats(Long timeslotId) {
         return this.concertSeatRepository.findAllByConcertTimeslotIdOrderBySeatId(timeslotId);
     }
+
+    ConcertSeat findConcertSeat(Long seatId) {
+        return this.concertSeatRepository.findById(seatId)
+                .orElseThrow(() -> new NoSuchElementException("No concert seat found with id: " + seatId));
+    }
 }
