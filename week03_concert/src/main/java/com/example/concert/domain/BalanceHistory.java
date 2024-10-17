@@ -3,11 +3,19 @@ package com.example.concert.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class PayHistory {
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BalanceHistory {
 
     @Id
     @GeneratedValue

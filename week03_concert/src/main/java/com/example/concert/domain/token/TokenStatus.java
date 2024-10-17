@@ -1,4 +1,4 @@
-package com.example.concert.domain.enums;
+package com.example.concert.domain.token;
 
 public enum TokenStatus {
     WAIT,
