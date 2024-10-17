@@ -44,17 +44,13 @@ public class ConcertController {
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId
     ) {
-        List<ConcertSeatDTO> dummySeats = new ArrayList<>();
-        dummySeats.add(
-                ConcertSeatDTO.builder()
-                        .id(1L)
-                        .concertTimeslotId(timeSlotId)
-                        .seatId("5D")
-                        .isEmpty(Boolean.TRUE)
-                        .build()
-        );
+        List<ConcertSeatDTO> seats = concertFacade.findConcertSeats(timeSlotId)
+                .stream()
+                .map(ConcertSeatDTO::from)
+                .toList();
+
         return GetAvailableSeats.Response.builder()
-                .seats(dummySeats)
+                .seats(seats)
                 .build();
     }
 
