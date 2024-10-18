@@ -103,7 +103,7 @@ class BalanceServiceTest {
     }
 
     @Test
-    @DisplayName("충전 실패 : 마이너스 결제 금액")
+    @DisplayName("충전 실패 : 마이너스 충전 금액")
     void charge_fail() {
         // Given
         Long userId = 1L;

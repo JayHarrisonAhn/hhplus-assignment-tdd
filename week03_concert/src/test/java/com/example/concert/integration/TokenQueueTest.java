@@ -58,6 +58,9 @@ public class TokenQueueTest {
 
     @BeforeEach
     void setUp() {
+        // 시간 부족으로 인해 concert data save용 service와 facade를 작성하지 못했습니다..ㅠㅠ
+        // repository를 레어하게 이용해서 데이터를 저장하는 것은 분명 부족한 부분입니다
+        // 다음주차에 해당 기능들을 application에서 구현하도록 하겠습니다.
         this.concertId = concertRepository.save(
                 Concert.builder()
                         .id(1L)

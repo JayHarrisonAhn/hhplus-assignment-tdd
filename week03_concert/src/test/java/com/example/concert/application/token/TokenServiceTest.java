@@ -55,7 +55,7 @@ class TokenServiceTest {
 
     @Test
     @DisplayName("토큰 인증 실패 : WAIT일 때")
-    void fail_validateActiveStatus() {
+    void fail_validateActiveStatus_wait() {
         // Given
         UUID tokenString = UUID.randomUUID();
         when(tokenRepository.findByToken(tokenString))
@@ -63,6 +63,27 @@ class TokenServiceTest {
                         Token.builder()
                                 .token(tokenString)
                                 .status(TokenStatus.WAIT)
+                                .build()
+                ));
+
+        // When, Then
+        assertThrows(
+                IllegalStateException.class, () -> {
+                    tokenService.validateActiveStatus(tokenString.toString());
+                }
+        );
+    }
+
+    @Test
+    @DisplayName("토큰 인증 실패 : EXPIRED일 때")
+    void fail_validateActiveStatus_expired() {
+        // Given
+        UUID tokenString = UUID.randomUUID();
+        when(tokenRepository.findByToken(tokenString))
+                .thenReturn(Optional.ofNullable(
+                        Token.builder()
+                                .token(tokenString)
+                                .status(TokenStatus.EXPIRED)
                                 .build()
                 ));
 
