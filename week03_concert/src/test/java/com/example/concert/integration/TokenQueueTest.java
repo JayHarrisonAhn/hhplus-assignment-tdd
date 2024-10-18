@@ -82,6 +82,7 @@ public class TokenQueueTest {
         for (int i = 1; i <= maxNumOfSeats; i++) {
             concertSeatRepository.save(
                     ConcertSeat.builder()
+                            .concertTimeslotId(this.concertTimeslotId)
                             .id((long) i)
                             .seatId("A-" + i)
                             .price(10000L)
@@ -92,11 +93,10 @@ public class TokenQueueTest {
 
     @Test
     @DisplayName("20명이 15개 좌석에 동시에 예약 시도시, 30개의 PayHistory 발생(charge + pay)")
-    void concurrent_20() {
+    void concurrent20UsersTo15Seats() {
         // When
         ExecutorService executor = Executors.newFixedThreadPool(20);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
-        AtomicReference<LocalDateTime> registeredTime = new AtomicReference<>();
         for (int i = 1; i <= 20; i++) {
             long taskId = i; // Assign a unique task number
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
@@ -137,11 +137,76 @@ public class TokenQueueTest {
         System.out.println("All tasks completed.");
 
         // Then
+        // 예약 시도한 User의 PayHistory 갯수가 maxNumOfSeats의 2배인가(charge+pay)
         long numOfPayHistories = 0;
         for (int i = 1; i <= 20; i++) {
             Long userId = this.userFacade.findByUsername("user"+i).getId();
             numOfPayHistories += this.balanceHistoryRepository.findAllByUserIdEquals(userId).size();
         }
         assertEquals(this.maxNumOfSeats * 2, numOfPayHistories);
+    }
+
+    @Test
+    @DisplayName("20명이 1개 좌석에 동시에 예약 시도시, 1개의 좌석 예약만 발생")
+    void concurrent20UsersTo1Seats() {
+        // When
+        ExecutorService executor = Executors.newFixedThreadPool(20);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            long taskId = i; // Assign a unique task number
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                System.out.println(taskId + "th user started to register on thread " + Thread.currentThread().getName());
+                try {
+                    Long userId = this.userFacade.createUser("user" + taskId).getId();
+
+                    String token = this.tokenFacade.issue(userId).getToken().toString();
+
+                    do {
+                        Thread.sleep(1000);
+                    } while (this.tokenFacade.check(userId, token).getStatus().equals(TokenStatus.WAIT));
+
+                    Long seatId = this.concertFacade.occupyConcertSeat(
+                            1L,
+                            userId,
+                            token
+                    ).getId();
+
+                    this.balanceFacade.charge(userId, 10000L);
+
+                    this.concertFacade.paySeat(
+                            seatId,
+                            userId,
+                            token
+                    );
+                    System.out.println(taskId + "th user Succeeded");
+                } catch (Exception ignored) {
+                    System.out.println(taskId + "th user Failed : " + ignored.getMessage());
+                }
+                System.out.println(taskId + "th user Finished");
+            }, executor);
+            futures.add(future);
+        }
+        CompletableFuture<Void> allOfFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        assertDoesNotThrow( () -> allOfFutures.get() );
+        executor.shutdown();
+        System.out.println("All tasks completed.");
+
+        // Then
+        // Concert Timeslot 내 모든 좌석 중 한 곳에서만 예약이 되었는가
+        assertEquals(1,
+                this.concertSeatRepository
+                        .findAllByConcertTimeslotIdOrderBySeatId(this.concertTimeslotId)
+                        .stream()
+                        .filter( seat -> seat.getUserId() != null)
+                        .count()
+        );
+
+        // 예약 시도한 User의 PayHistory 갯수가 2개인가(charge+pay)
+        long numOfPayHistories = 0;
+        for (int i = 1; i <= 20; i++) {
+            Long userId = this.userFacade.findByUsername("user"+i).getId();
+            numOfPayHistories += this.balanceHistoryRepository.findAllByUserIdEquals(userId).size();
+        }
+        assertEquals(2, numOfPayHistories);
     }
 }
