@@ -9,14 +9,13 @@ import com.example.concert.application.concert.repository.ConcertTimeslotOccupan
 import com.example.concert.application.concert.repository.ConcertTimeslotRepository;
 import com.example.concert.application.token.TokenFacade;
 import com.example.concert.application.user.UserFacade;
+import com.example.concert.application.user.repository.UserRepository;
 import com.example.concert.domain.*;
 import com.example.concert.domain.token.Token;
 import com.example.concert.domain.token.TokenStatus;
 import com.example.concert.infra.Scheduler;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -44,6 +43,7 @@ public class TokenQueueTest {
     @Autowired private ConcertTimeslotOccupancyRepository concertTimeslotOccupancyRepository;
     @Autowired private ConcertSeatRepository concertSeatRepository;
     @Autowired private BalanceHistoryRepository balanceHistoryRepository;
+    @Autowired private UserRepository userRepository;
 
     @Autowired private TokenFacade tokenFacade;
     @Autowired private BalanceFacade balanceFacade;
@@ -92,6 +92,11 @@ public class TokenQueueTest {
                             .build()
             );
         }
+    }
+
+    @AfterEach
+    void tearDown() {
+        this.userRepository.deleteAll();
     }
 
     @Test
