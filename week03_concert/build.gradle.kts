@@ -28,10 +28,15 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("com.h2database:h2:2.3.232")
+	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	annotationProcessor("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core:3.+")
+
+	testImplementation("org.testcontainers:junit-jupiter:1.20.2")
+	testImplementation("org.testcontainers:mariadb:1.20.2")
+
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

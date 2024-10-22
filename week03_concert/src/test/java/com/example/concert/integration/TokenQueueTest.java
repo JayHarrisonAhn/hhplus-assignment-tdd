@@ -11,32 +11,37 @@ import com.example.concert.application.token.TokenFacade;
 import com.example.concert.application.user.UserFacade;
 import com.example.concert.application.user.repository.UserRepository;
 import com.example.concert.domain.*;
-import com.example.concert.domain.token.Token;
 import com.example.concert.domain.token.TokenStatus;
-import com.example.concert.infra.Scheduler;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TokenQueueTest {
 
-    @Autowired private Scheduler scheduler;
+    @Container
+    MariaDBContainer mariaDB = new MariaDBContainer(DockerImageName.parse("mariadb:10.11"))
+            .withDatabaseName("concert")
+            .withUsername("username")
+            .withPassword("password");
 
     @Autowired private ConcertRepository concertRepository;
     @Autowired private ConcertTimeslotRepository concertTimeslotRepository;
