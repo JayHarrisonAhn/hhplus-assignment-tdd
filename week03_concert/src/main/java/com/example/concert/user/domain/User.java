@@ -1,5 +1,7 @@
 package com.example.concert.user.domain;
 
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +25,7 @@ public class User {
 
     public void validate() {
         if (this.username == null || this.username.isEmpty()) {
-            throw new IllegalArgumentException("Username is required");
+            throw new CommonException(CommonErrorCode.USER_PARAM_INSUFFICIENT);
         }
     }
 }

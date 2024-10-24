@@ -1,5 +1,7 @@
 package com.example.concert.concert;
 
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
@@ -35,7 +37,7 @@ public class ConcertService {
 
     Concert findConcert(Long concertId) {
         return concertRepository.findById(concertId)
-                .orElseThrow(() -> new NoSuchElementException("No concert found with id: " + concertId));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_NOT_FOUND));
     }
 
     ConcertTimeslot createConcertTimeslot(Long concertId, LocalDateTime concertStartTime, LocalDateTime reservationStartTime) {
@@ -62,7 +64,7 @@ public class ConcertService {
 
     ConcertTimeslot findConcertTimeslot(Long timeslotId) {
         return this.concertTimeslotRepository.findById(timeslotId)
-                .orElseThrow(() -> new NoSuchElementException("No timeslot found with id: " + timeslotId));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_TIMESLOT_NOT_FOUND));
     }
 
     List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
@@ -91,6 +93,6 @@ public class ConcertService {
 
     ConcertSeat findConcertSeat(Long seatId) {
         return this.concertSeatRepository.findById(seatId)
-                .orElseThrow(() -> new NoSuchElementException("No concert seat found with id: " + seatId));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_SEAT_NOT_FOUND));
     }
 }

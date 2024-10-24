@@ -35,14 +35,14 @@ public class TokenService {
 
     public Token check(String tokenString) {
         return this.tokenRepository.findByToken(UUID.fromString(tokenString))
-                .orElseThrow( () -> new CommonException(CommonErrorCode.TOKEN_NOT_ACTIVE));
+                .orElseThrow( () -> new CommonException(CommonErrorCode.TOKEN_NOT_VALID));
     }
 
     public void validateActiveStatus(String tokenString) {
         Token token = this.check(tokenString);
 
         if (token.getStatus() != TokenStatus.ACTIVE) {
-            throw new CommonException(CommonErrorCode.TOKEN_NOT_ACTIVE);
+            throw new CommonException(CommonErrorCode.TOKEN_NOT_VALID);
         }
     }
 

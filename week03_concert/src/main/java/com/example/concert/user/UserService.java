@@ -1,5 +1,7 @@
 package com.example.concert.user;
 
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import com.example.concert.user.domain.User;
 import com.example.concert.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,11 @@ public class UserService {
 
     public User findByUserId(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("No user found with id: " + userId));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.USER_NOT_FOUND));
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException("No user found with username: " + username));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.USER_NOT_FOUND));
     }
 }

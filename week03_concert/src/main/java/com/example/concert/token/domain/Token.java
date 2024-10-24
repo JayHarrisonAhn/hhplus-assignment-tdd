@@ -1,5 +1,7 @@
 package com.example.concert.token.domain;
 
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +36,7 @@ public class Token {
 
     public void validateUser(Long userId) {
         if (!this.userId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found");
+            throw new CommonException(CommonErrorCode.TOKEN_NOT_VALID);
         }
     }
 

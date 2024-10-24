@@ -4,6 +4,8 @@ import com.example.concert.balance.domain.balance.Balance;
 import com.example.concert.balance.domain.balancehistory.BalanceHistory;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
 import com.example.concert.balance.domain.balance.BalanceRepository;
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,12 +30,12 @@ public class BalanceService {
 
     public Balance viewBalance(Long userId) {
         return balanceRepository.findByUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("No balance found for user " + userId));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.USER_NOT_FOUND));
     }
 
     public BalanceHistory pay(Long userId, Long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Pay amount must be greater than zero");
+            throw new CommonException(CommonErrorCode.BALANCE_TRANSACTION_AMOUNT_LESS_THAN_ZERO);
         }
 
         return this.changeBalance(userId, -amount);
@@ -41,7 +43,7 @@ public class BalanceService {
 
     public BalanceHistory charge(Long userId, Long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Charge amount must be greater than zero");
+            throw new CommonException(CommonErrorCode.BALANCE_TRANSACTION_AMOUNT_LESS_THAN_ZERO);
         }
 
         return this.changeBalance(userId, amount);
