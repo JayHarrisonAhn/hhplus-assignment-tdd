@@ -1,6 +1,7 @@
 package com.example.concert.user;
 
 import com.example.concert.balance.BalanceService;
+import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

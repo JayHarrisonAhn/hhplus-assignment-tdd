@@ -1,6 +1,7 @@
 package com.example.concert.user;
 
-import com.example.concert.user.repository.UserRepository;
+import com.example.concert.user.domain.User;
+import com.example.concert.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

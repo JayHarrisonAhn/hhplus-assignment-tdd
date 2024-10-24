@@ -1,7 +1,7 @@
 package com.example.concert.unit.service;
 
 import com.example.concert.user.UserService;
-import com.example.concert.user.repository.UserRepository;
+import com.example.concert.user.domain.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

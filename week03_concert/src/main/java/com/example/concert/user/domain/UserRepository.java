@@ -1,6 +1,5 @@
-package com.example.concert.user.repository;
+package com.example.concert.user.domain;
 
-import com.example.concert.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

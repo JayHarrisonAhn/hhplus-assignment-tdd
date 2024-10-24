@@ -9,7 +9,7 @@ import com.example.concert.concert.domain.concerttimeslotoccupancy.ConcertTimesl
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslotRepository;
 import com.example.concert.token.TokenFacade;
 import com.example.concert.user.UserFacade;
-import com.example.concert.user.repository.UserRepository;
+import com.example.concert.user.domain.UserRepository;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;

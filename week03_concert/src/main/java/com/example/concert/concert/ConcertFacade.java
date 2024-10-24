@@ -9,7 +9,7 @@ import com.example.concert.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.balance.BalanceService;
 import com.example.concert.token.TokenService;
 import com.example.concert.user.UserService;
-import com.example.concert.user.User;
+import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

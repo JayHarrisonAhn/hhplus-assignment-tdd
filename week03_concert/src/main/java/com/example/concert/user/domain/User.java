@@ -1,4 +1,4 @@
-package com.example.concert.user;
+package com.example.concert.user.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
