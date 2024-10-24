@@ -9,7 +9,7 @@ import com.example.concert.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.balance.BalanceService;
 import com.example.concert.token.TokenService;
 import com.example.concert.user.UserService;
-import com.example.concert.user.User;
+import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,27 +25,32 @@ public class ConcertFacade {
     private final ConcertService concertService;
     private final UserService userService;
     private final BalanceService balanceService;
-    private final TokenService tokenService;
 
-    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
+    public Concert createConcert(String name) {
+        return concertService.createConcert(name);
+    }
 
+    public ConcertTimeslot createConcertTimeslot(Long concertId, LocalDateTime concertStartTime, LocalDateTime reservationStartTime) {
+        return concertService.createConcertTimeslot(concertId, concertStartTime, reservationStartTime);
+    }
+
+    public List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
+        return concertService.createConcertSeats(concertTimeslotId, price, seatIds);
+    }
+
+    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
         Concert concert = concertService.findConcert(concertId);
 
         return concertService.findConcertTimeslots(concert.getId());
     }
 
-    public List<ConcertSeat> findConcertSeats(Long timeslotId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public List<ConcertSeat> findConcertSeats(Long timeslotId) {
         ConcertTimeslot timeslot = concertService.findConcertTimeslot(timeslotId);
 
         return concertService.findConcertSeats(timeslot.getId());
     }
 
-    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public ConcertSeat occupyConcertSeat(Long seatId, Long userId) {
         User user = userService.findByUserId(userId);
 
         ConcertSeat seat = concertService.findConcertSeat(seatId);
@@ -55,9 +60,7 @@ public class ConcertFacade {
         return seat;
     }
 
-    public ConcertSeatPayInfo paySeat(Long seatId, Long userId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public ConcertSeatPayInfo paySeat(Long seatId, Long userId) {
         ConcertSeat seat = this.concertService.findConcertSeat(seatId);
 
         BalanceHistory balanceHistory = this.balanceService.pay(userId, seat.getPrice());

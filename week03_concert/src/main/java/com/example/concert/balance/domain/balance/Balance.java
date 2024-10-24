@@ -1,5 +1,7 @@
 package com.example.concert.balance.domain.balance;
 
+import com.example.concert.common.error.CommonErrorCode;
+import com.example.concert.common.error.CommonException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -25,7 +27,7 @@ public class Balance {
 
     public void accumulateBalance(Long amount) {
         if (balance + amount < 0) {
-            throw new IllegalStateException("Amount less than balance");
+            throw new CommonException(CommonErrorCode.BALANCE_INSUFFICIENT);
         }
 
         this.balance += amount;

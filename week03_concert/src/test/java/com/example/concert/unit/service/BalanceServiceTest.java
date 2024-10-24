@@ -4,6 +4,7 @@ import com.example.concert.balance.domain.balance.BalanceRepository;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
 import com.example.concert.balance.BalanceService;
 import com.example.concert.balance.domain.balance.Balance;
+import com.example.concert.common.error.CommonException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,7 +68,7 @@ class BalanceServiceTest {
 
         // When, Then
         assertThrows(
-                IllegalArgumentException.class, () -> {
+                CommonException.class, () -> {
                     balanceService.pay(userId, amount);
                 }
         );
@@ -111,7 +112,7 @@ class BalanceServiceTest {
 
         // When, Then
         assertThrows(
-                IllegalArgumentException.class, () -> {
+                CommonException.class, () -> {
                     balanceService.pay(userId, amount);
                 }
         );
