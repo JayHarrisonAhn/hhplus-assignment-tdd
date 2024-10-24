@@ -27,6 +27,18 @@ public class ConcertFacade {
     private final BalanceService balanceService;
     private final TokenService tokenService;
 
+    public Concert createConcert(String name) {
+        return concertService.createConcert(name);
+    }
+
+    public ConcertTimeslot createConcertTimeslot(Long concertId, LocalDateTime concertStartTime, LocalDateTime reservationStartTime) {
+        return concertService.createConcertTimeslot(concertId, concertStartTime, reservationStartTime);
+    }
+
+    public List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
+        return concertService.createConcertSeats(concertTimeslotId, price, seatIds);
+    }
+
     public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId, String tokenString) {
         tokenService.validateActiveStatus(tokenString);
 
@@ -38,6 +50,10 @@ public class ConcertFacade {
     public List<ConcertSeat> findConcertSeats(Long timeslotId, String tokenString) {
         tokenService.validateActiveStatus(tokenString);
 
+        return findConcertSeats(timeslotId);
+    }
+
+    public List<ConcertSeat> findConcertSeats(Long timeslotId) {
         ConcertTimeslot timeslot = concertService.findConcertTimeslot(timeslotId);
 
         return concertService.findConcertSeats(timeslot.getId());
