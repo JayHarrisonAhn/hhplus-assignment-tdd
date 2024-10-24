@@ -1,4 +1,4 @@
-package com.example.concert._infra;
+package com.example.concert.common.scheduler;
 
 import com.example.concert.token.TokenFacade;
 import jakarta.transaction.Transactional;
