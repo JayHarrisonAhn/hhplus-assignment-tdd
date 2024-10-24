@@ -1,12 +1,12 @@
 package com.example.concert.token;
 
+import com.example.concert.common.error.CommonException;
+import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.token.domain.TokenRepository;
 import com.example.concert.token.domain.Token;
 import com.example.concert.token.domain.TokenStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,14 +35,14 @@ public class TokenService {
 
     public Token check(String tokenString) {
         return this.tokenRepository.findByToken(UUID.fromString(tokenString))
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found"));
+                .orElseThrow( () -> new CommonException(CommonErrorCode.TOKEN_NOT_ACTIVE));
     }
 
     public void validateActiveStatus(String tokenString) {
         Token token = this.check(tokenString);
 
         if (token.getStatus() != TokenStatus.ACTIVE) {
-            throw new IllegalStateException("Token is not active");
+            throw new CommonException(CommonErrorCode.TOKEN_NOT_ACTIVE);
         }
     }
 
