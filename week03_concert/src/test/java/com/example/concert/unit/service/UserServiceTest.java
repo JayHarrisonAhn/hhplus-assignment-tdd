@@ -1,5 +1,6 @@
 package com.example.concert.unit.service;
 
+import com.example.concert.common.error.CommonException;
 import com.example.concert.user.UserService;
 import com.example.concert.user.domain.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,7 @@ class UserServiceTest {
     @DisplayName("실패 : null username")
     void fail_null_username() {
         assertThrows(
-                IllegalArgumentException.class,
+                CommonException.class,
                 () -> {
                     this.userService.createUser(null);
                 }
@@ -43,7 +44,7 @@ class UserServiceTest {
     @DisplayName("실패 : empty username")
     void fail_empty_username() {
         assertThrows(
-                IllegalArgumentException.class,
+                CommonException.class,
                 () -> {
                     this.userService.createUser("");
                 }

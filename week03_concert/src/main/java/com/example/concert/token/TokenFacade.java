@@ -22,6 +22,7 @@ public class TokenFacade {
     public Token check(Long userId, String tokenString) {
         Token token = this.tokenService.check(tokenString);
         token.validateUser(userId);
+        token.validateActive();
         return token;
     }
 

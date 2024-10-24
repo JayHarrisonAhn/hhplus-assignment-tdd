@@ -82,16 +82,14 @@ public class TokenQueueTest {
 
                     Long seatId = this.concertFacade.occupyConcertSeat(
                             seats.get(i % seats.size()).getId(),
-                            user.getId(),
-                            token
+                            user.getId()
                     ).getId();
 
                     this.balanceFacade.charge(user.getId(), 10000L);
 
                     this.concertFacade.paySeat(
                             seatId,
-                            user.getId(),
-                            token
+                            user.getId()
                     );
                     System.out.println(user.getId() + " user Succeeded");
                 } catch (Exception ignored) {
@@ -149,16 +147,14 @@ public class TokenQueueTest {
 
                     Long seatId = this.concertFacade.occupyConcertSeat(
                             seats.get(0).getId(),
-                            user.getId(),
-                            token
+                            user.getId()
                     ).getId();
 
                     this.balanceFacade.charge(user.getId(), 10000L);
 
                     this.concertFacade.paySeat(
                             seatId,
-                            user.getId(),
-                            token
+                            user.getId()
                     );
                     System.out.println(i + "th user Succeeded");
                 } catch (Exception ignored) {

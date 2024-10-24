@@ -2,6 +2,7 @@ package com.example.concert.common.scheduler;
 
 import com.example.concert.token.TokenFacade;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @Transactional
+@Slf4j
 public class Scheduler {
 
     public Scheduler(TokenFacade tokenFacade) {
@@ -17,7 +19,7 @@ public class Scheduler {
 
         Runnable task = () -> {
             tokenFacade.refreshTokenQueue(5);
-            System.out.println("Token refreshed");
+            log.info("Token refreshed");
         };
 
         scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);

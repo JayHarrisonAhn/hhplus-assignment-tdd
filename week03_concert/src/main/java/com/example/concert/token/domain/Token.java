@@ -40,6 +40,12 @@ public class Token {
         }
     }
 
+    public void validateActive() {
+        if (!this.status.equals(TokenStatus.ACTIVE)) {
+            throw new CommonException(CommonErrorCode.TOKEN_NOT_VALID);
+        }
+    }
+
     public void activate(LocalDateTime updatedAt) {
         this.status = TokenStatus.ACTIVE;
         this.updatedAt = updatedAt;

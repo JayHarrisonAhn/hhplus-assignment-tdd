@@ -1,5 +1,6 @@
 package com.example.concert.unit.service;
 
+import com.example.concert.common.error.CommonException;
 import com.example.concert.token.TokenService;
 import com.example.concert.token.domain.TokenRepository;
 import com.example.concert.token.domain.Token;
@@ -68,7 +69,7 @@ class TokenServiceTest {
 
         // When, Then
         assertThrows(
-                IllegalStateException.class, () -> {
+                CommonException.class, () -> {
                     tokenService.validateActiveStatus(tokenString.toString());
                 }
         );
@@ -89,7 +90,7 @@ class TokenServiceTest {
 
         // When, Then
         assertThrows(
-                IllegalStateException.class, () -> {
+                CommonException.class, () -> {
                     tokenService.validateActiveStatus(tokenString.toString());
                 }
         );

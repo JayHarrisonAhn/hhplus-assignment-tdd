@@ -25,7 +25,6 @@ public class ConcertFacade {
     private final ConcertService concertService;
     private final UserService userService;
     private final BalanceService balanceService;
-    private final TokenService tokenService;
 
     public Concert createConcert(String name) {
         return concertService.createConcert(name);
@@ -39,18 +38,10 @@ public class ConcertFacade {
         return concertService.createConcertSeats(concertTimeslotId, price, seatIds);
     }
 
-    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
         Concert concert = concertService.findConcert(concertId);
 
         return concertService.findConcertTimeslots(concert.getId());
-    }
-
-    public List<ConcertSeat> findConcertSeats(Long timeslotId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
-        return findConcertSeats(timeslotId);
     }
 
     public List<ConcertSeat> findConcertSeats(Long timeslotId) {
@@ -59,9 +50,7 @@ public class ConcertFacade {
         return concertService.findConcertSeats(timeslot.getId());
     }
 
-    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public ConcertSeat occupyConcertSeat(Long seatId, Long userId) {
         User user = userService.findByUserId(userId);
 
         ConcertSeat seat = concertService.findConcertSeat(seatId);
@@ -71,9 +60,7 @@ public class ConcertFacade {
         return seat;
     }
 
-    public ConcertSeatPayInfo paySeat(Long seatId, Long userId, String tokenString) {
-        tokenService.validateActiveStatus(tokenString);
-
+    public ConcertSeatPayInfo paySeat(Long seatId, Long userId) {
         ConcertSeat seat = this.concertService.findConcertSeat(seatId);
 
         BalanceHistory balanceHistory = this.balanceService.pay(userId, seat.getPrice());

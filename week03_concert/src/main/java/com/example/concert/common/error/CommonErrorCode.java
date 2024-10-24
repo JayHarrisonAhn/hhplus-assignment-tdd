@@ -17,6 +17,8 @@ public enum CommonErrorCode {
 
     BALANCE_INSUFFICIENT(HttpStatus.BAD_REQUEST, "BE001", "Balance insufficient"),
     BALANCE_TRANSACTION_AMOUNT_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "BE002", "Balance transaction amount less than zero"),
+
+    UNHANDLED_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E001", "Unhandled error"),
     ;
 
     private final HttpStatus httpStatus;

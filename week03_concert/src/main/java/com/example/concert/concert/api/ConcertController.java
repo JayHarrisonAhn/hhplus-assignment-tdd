@@ -26,7 +26,7 @@ public class ConcertController {
             GetAvailableTimeslots.Request request,
             @PathVariable("concertId") Long concertId
     ) {
-        List<ConcertTimeslotDTO> timeslots = concertFacade.findConcertTimeslots(concertId, request.getToken())
+        List<ConcertTimeslotDTO> timeslots = concertFacade.findConcertTimeslots(concertId)
                 .stream()
                 .map(ConcertTimeslotDTO::from)
                 .toList();
@@ -43,7 +43,7 @@ public class ConcertController {
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId
     ) {
-        List<ConcertSeatDTO> seats = concertFacade.findConcertSeats(timeSlotId, request.getToken())
+        List<ConcertSeatDTO> seats = concertFacade.findConcertSeats(timeSlotId)
                 .stream()
                 .map(ConcertSeatDTO::from)
                 .toList();
@@ -63,8 +63,7 @@ public class ConcertController {
     ) {
         ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(
                 seatId,
-                request.getUserId(),
-                request.getToken()
+                request.getUserId()
         );
         return OccupySeat.Response.builder()
                 .seat(
@@ -82,8 +81,7 @@ public class ConcertController {
     ) {
         ConcertSeatPayInfo concertSeatPayInfo = this.concertFacade.paySeat(
                 seatId,
-                request.getUserId(),
-                request.getToken()
+                request.getUserId()
         );
         return PayReservation.Response.builder()
                 .seat(
