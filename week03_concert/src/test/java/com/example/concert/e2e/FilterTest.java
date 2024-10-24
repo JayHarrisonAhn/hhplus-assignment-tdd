@@ -117,6 +117,5 @@ public class FilterTest {
                 .body("")
                 .when().get("concert/" + concertId + "/timeSlot")
                 .then().body("errorCode", equalTo(CommonErrorCode.TOKEN_NOT_VALID.getCode()));
-
     }
 }
