@@ -56,7 +56,7 @@ public class ConcertController {
     @PostMapping("/{concertId}/timeSlot/{timeSlotId}/seat/{seatId}")
     @Operation(summary = "콘서트 좌석 점유", description = "좌석 결제 전까지 자리를 점유합니다. 일정 시간동안 결제되지 않으면 점유가 해제됩니다.")
     OccupySeat.Response occupySeat(
-            OccupySeat.Request request,
+            @RequestBody OccupySeat.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
             @PathVariable("seatId") Long seatId
@@ -74,7 +74,7 @@ public class ConcertController {
     @PostMapping("/{concertId}/timeSlot/{timeSlotId}/seat/{seatId}/pay")
     @Operation(summary = "콘서트 좌석 결제", description = "점유한 좌석을 결제합니다.")
     PayReservation.Response payReservation(
-            PayReservation.Request request,
+            @RequestBody PayReservation.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
             @PathVariable("seatId") Long seatId
