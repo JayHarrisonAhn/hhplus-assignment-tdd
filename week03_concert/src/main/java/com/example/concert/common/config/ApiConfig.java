@@ -1,5 +1,6 @@
 package com.example.concert.common.config;
 
+import com.example.concert.common.api.LoggerFilter;
 import com.example.concert.common.api.TokenValidateFilter;
 import com.example.concert.common.api.TokenValidateInterceptor;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,18 @@ public class ApiConfig implements WebMvcConfigurer {
     public FilterRegistrationBean<TokenValidateFilter> tokenValidateFilter() {
         FilterRegistrationBean<TokenValidateFilter> tokenValidateFilterFilterRegistrationBean = new FilterRegistrationBean<>();
         tokenValidateFilterFilterRegistrationBean.setFilter(new TokenValidateFilter());
-        tokenValidateFilterFilterRegistrationBean.setOrder(1);
+        tokenValidateFilterFilterRegistrationBean.setOrder(2);
         tokenValidateFilterFilterRegistrationBean.addUrlPatterns("/concert/*");
         return tokenValidateFilterFilterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<LoggerFilter> loggerFilter() {
+        FilterRegistrationBean<LoggerFilter> logFilterFilterRegistrationBean = new FilterRegistrationBean<>();
+        logFilterFilterRegistrationBean.setFilter(new LoggerFilter());
+        logFilterFilterRegistrationBean.setOrder(1);
+        logFilterFilterRegistrationBean.addUrlPatterns("*");
+        return logFilterFilterRegistrationBean;
     }
 
     @Override
