@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+	runtimeOnly("com.h2database:h2:2.3.232")
 	annotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -38,6 +38,7 @@ dependencies {
 	testImplementation("org.testcontainers:mariadb:1.20.2")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testRuntimeOnly("org.mariadb.jdbc:mariadb-java-client")
 }
 
 tasks.withType<Test> {
