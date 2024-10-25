@@ -2,6 +2,7 @@ package com.example.concert.integration;
 
 import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
+import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.token.TokenFacade;
 import com.example.concert.user.UserFacade;
@@ -53,8 +54,8 @@ public class ConcurrencyTest {
     }
 
     @Test
-    @DisplayName("20명이 15개 좌석에 동시에 예약 시도시, 30개의 PayHistory 발생(charge + pay)")
-    void concurrent20UsersTo15Seats() {
+    @DisplayName("20명이 10개 좌석에 동시에 예약 시도시, 20개의 PayHistory 발생(charge + pay)")
+    void concurrent20UsersTo10Seats() {
         // Given
         List<User> users = IntStream.range(0, 20)
                 .mapToObj( i -> userFacade.createUser(String.valueOf(i)))
@@ -74,11 +75,16 @@ public class ConcurrencyTest {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 System.out.println(user.getId() + " user started to register on thread " + Thread.currentThread().getName());
                 try {
-                    String token = this.tokenFacade.issue(user.getId()).getToken().toString();
+                    String tokenString = this.tokenFacade.issue(user.getId()).getToken().toString();
 
+                    TokenStatus tokenStatus = null;
                     do {
                         Thread.sleep(1000);
-                    } while (this.tokenFacade.check(user.getId(), token).getStatus().equals(TokenStatus.WAIT));
+                        try {
+                            tokenStatus = this.tokenFacade.check(user.getId(), tokenString).getStatus();
+                        } catch (CommonException ignored) {
+                        }
+                    } while (tokenStatus != TokenStatus.ACTIVE);
 
                     Long seatId = this.concertFacade.occupyConcertSeat(
                             seats.get(i % seats.size()).getId(),
@@ -139,11 +145,16 @@ public class ConcurrencyTest {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 System.out.println(i + "th user started to register on thread " + Thread.currentThread().getName());
                 try {
-                    String token = this.tokenFacade.issue(user.getId()).getToken().toString();
+                    String tokenString = this.tokenFacade.issue(user.getId()).getToken().toString();
 
+                    TokenStatus tokenStatus = null;
                     do {
                         Thread.sleep(1000);
-                    } while (this.tokenFacade.check(user.getId(), token).getStatus().equals(TokenStatus.WAIT));
+                        try {
+                            tokenStatus = this.tokenFacade.check(user.getId(), tokenString).getStatus();
+                        } catch (CommonException ignored) {
+                        }
+                    } while (tokenStatus != TokenStatus.ACTIVE);
 
                     Long seatId = this.concertFacade.occupyConcertSeat(
                             seats.get(0).getId(),
