@@ -9,7 +9,7 @@ import java.util.List;
 public interface ConcertTimeslotRepository extends JpaRepository<ConcertTimeslot, Long> {
 
     @Query("""
-        SELECT new com.example.concert.domain.dto.ConcertTimeslotWithOccupancy(
+        SELECT new com.example.concert.concert.dto.ConcertTimeslotWithOccupancy(
             ts.id,
             ts.concertId,
             ts.concertStartTime,
@@ -21,7 +21,7 @@ public interface ConcertTimeslotRepository extends JpaRepository<ConcertTimeslot
             ConcertTimeslot ts
             INNER JOIN
             ConcertTimeslotOccupancy occ
-        WHERE
+        ON
             ts.concertId=:concertId
     """)
     List<ConcertTimeslotWithOccupancy> findAllByConcertIdWithOccupancy(Long concertId);

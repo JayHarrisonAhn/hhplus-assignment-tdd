@@ -6,9 +6,7 @@ import com.example.concert.balance.api.BalanceControllerDTO.*;
 import com.example.concert.balance.api.dto.BalanceHistoryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,10 +18,11 @@ public class BalanceController {
     @Operation(summary = "잔액 충전", description = "잔액을 충전합니다.")
     @PostMapping("/charge")
      Charge.Response charge(
-             Charge.Request request
+             @RequestHeader("Authorization") Long userId,
+             @RequestBody Charge.Request request
     ) {
         BalanceHistory balanceHistory = balanceFacade.charge(
-                request.getUserId(),
+                userId,
                 request.getAmount()
         );
         return Charge.Response.builder()

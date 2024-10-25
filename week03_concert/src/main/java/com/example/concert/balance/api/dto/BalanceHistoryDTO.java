@@ -1,13 +1,17 @@
 package com.example.concert.balance.api.dto;
 
 import com.example.concert.balance.domain.balancehistory.BalanceHistory;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BalanceHistoryDTO {
 
     private Long id;

@@ -6,10 +6,7 @@ import com.example.concert.token.api.TokenControllerDTO.*;
 import com.example.concert.token.api.dto.TokenDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +18,9 @@ public class TokenController {
     @PostMapping("")
     @Operation(summary = "토큰 발급", description = "Concert API에 접근하기 위한 토큰을 발급합니다.")
     Issue.Response issue(
-            Issue.Request request
+            @RequestHeader("Authorization") Long userId
     ) {
-        Token token = this.tokenFacade.issue(request.getUserId());
+        Token token = this.tokenFacade.issue(userId);
         return Issue.Response.builder()
                 .token(TokenDTO.from(token))
                 .build();
@@ -32,11 +29,12 @@ public class TokenController {
     @GetMapping("")
     @Operation(summary = "토큰 확인", description = "Concert API에 접근하기 위한 토큰이 유효한지 확인합니다.")
     Check.Response check(
-            Check.Request request
+            @RequestHeader("Authorization") Long userId,
+            @RequestHeader("Token") String tokenString
     ) {
         Token token = this.tokenFacade.check(
-                request.getUserId(),
-                request.getToken()
+                userId,
+                tokenString
         );
         return Check.Response.builder()
                 .token(TokenDTO.from(token))

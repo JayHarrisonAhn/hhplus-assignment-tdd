@@ -1,6 +1,7 @@
 package com.example.concert.unit.domain;
 
 import com.example.concert.balance.domain.balance.Balance;
+import com.example.concert.common.error.CommonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class BalanceTest {
             balance.accumulateBalance(+5000L);
         });
         assertThrows(
-                IllegalStateException.class, () -> {
+                CommonException.class, () -> {
                     balance.accumulateBalance(-5001L);
                 }
         );

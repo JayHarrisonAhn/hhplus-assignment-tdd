@@ -20,4 +20,8 @@ public class ConcertTimeslotOccupancy {
     private Integer maxSeatAmount;
 
     private Integer occupiedSeatAmount;
+
+    public void increaseOccupiedSeatAmount(Integer amount) {
+        this.maxSeatAmount += amount;
+    }
 }
