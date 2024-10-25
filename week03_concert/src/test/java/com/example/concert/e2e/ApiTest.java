@@ -3,6 +3,7 @@ package com.example.concert.e2e;
 import com.example.concert.balance.api.BalanceControllerDTO;
 import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.concert.ConcertFacade;
+import com.example.concert.concert.api.ConcertControllerDTO;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.user.UserFacade;
 import io.restassured.RestAssured;
@@ -93,8 +94,8 @@ public class ApiTest {
             throw new RuntimeException(e);
         }
 
-        // When, Then
-        RestAssured.given()
+        // When
+        ConcertControllerDTO.GetAvailableTimeslots.Response response = RestAssured.given()
                 .port(port)
                 .header("Authorization", userId)
                 .header("Token", token)
@@ -104,7 +105,15 @@ public class ApiTest {
                 )
                 .when().get("/concert/"+concertId+"/timeSlot")
                 .then().log().all()
-                .extract();
+                .extract().as(ConcertControllerDTO.GetAvailableTimeslots.Response.class);
+
+        // Then
+        assertEquals(
+                1, response.getTimeSlots().size()
+        );
+        assertEquals(
+                concertTimeslotId, response.getTimeSlots().get(0).getId()
+        );
     }
 
     @Test
@@ -125,8 +134,8 @@ public class ApiTest {
             throw new RuntimeException(e);
         }
 
-        // When, Then
-        RestAssured.given()
+        // When
+        ConcertControllerDTO.GetAvailableSeats.Response response = RestAssured.given()
                 .port(port)
                 .header("Authorization", userId)
                 .header("Token", token)
@@ -136,6 +145,12 @@ public class ApiTest {
                 )
                 .when().get("/concert/"+concertId+"/timeSlot/"+concertTimeslotId+"/seat")
                 .then().log().all()
-                .extract();
+                .extract().as(ConcertControllerDTO.GetAvailableSeats.Response.class);
+
+        // Then
+        assertEquals(
+                concertSeatIds.size(),
+                response.getSeats().size()
+        );
     }
 }

@@ -15,7 +15,7 @@ public class BalanceControllerDTO {
         public static class Request {
             Long amount;
         }
-        @Getter @Builder public static class Response {
+        @Getter @AllArgsConstructor @NoArgsConstructor @Builder public static class Response {
             BalanceHistoryDTO balanceHistory;
         }
     }
