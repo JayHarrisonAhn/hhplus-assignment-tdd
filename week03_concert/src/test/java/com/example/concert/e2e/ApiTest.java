@@ -102,7 +102,7 @@ public class ApiTest {
                 .body(
                         new BalanceControllerDTO.Charge.Request(10000L)
                 )
-                .when().get("/concert/"+concertId+"/timeSlot/")
+                .when().get("/concert/"+concertId+"/timeSlot")
                 .then().log().all()
                 .extract();
     }
@@ -135,7 +135,7 @@ public class ApiTest {
                         new BalanceControllerDTO.Charge.Request(10000L)
                 )
                 .when().get("/concert/"+concertId+"/timeSlot/"+concertTimeslotId+"/seat")
-                .then()
+                .then().log().all()
                 .extract();
     }
 }
