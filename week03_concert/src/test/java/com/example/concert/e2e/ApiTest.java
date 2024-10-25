@@ -87,6 +87,12 @@ public class ApiTest {
                 .then().log().all()
                 .extract().path("token.id");
 
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         // When, Then
         RestAssured.given()
                 .port(port)
@@ -97,7 +103,7 @@ public class ApiTest {
                         new BalanceControllerDTO.Charge.Request(10000L)
                 )
                 .when().get("/concert/"+concertId+"/timeSlot/")
-                .then()
+                .then().log().all()
                 .extract();
     }
 
@@ -112,6 +118,12 @@ public class ApiTest {
                 .when().post("token")
                 .then().log().all()
                 .extract().path("token.id");
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // When, Then
         RestAssured.given()
