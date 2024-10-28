@@ -3,6 +3,7 @@ package com.example.concert.e2e;
 import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
+import com.example.concert.token.TokenFacade;
 import com.example.concert.user.UserFacade;
 import io.restassured.RestAssured;
 
@@ -34,6 +35,7 @@ public class FilterTest {
 
     @Autowired private UserFacade userFacade;
     @Autowired private ConcertFacade concertFacade;
+    @Autowired private TokenFacade tokenFacade;
 
     Long userId;
     Long concertId;
@@ -80,11 +82,7 @@ public class FilterTest {
                 .then().log().all()
                 .extract().path("token.id");
 
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.tokenFacade.refreshTokenQueue(1);
 
         // When
         RestAssured.given()
@@ -94,7 +92,6 @@ public class FilterTest {
                 .body("")
                 .when().get("concert/" + concertId + "/timeSlot")
                 .then().statusCode(200);
-
     }
 
     @Test

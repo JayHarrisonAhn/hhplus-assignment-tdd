@@ -2,6 +2,7 @@ package com.example.concert.integration;
 
 import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
+import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
@@ -68,9 +69,18 @@ public class ScenarioTest {
     void success_reservation() throws Exception {
         // When
         String token = this.tokenFacade.issue(userId).getToken().toString();
-        do {
-            Thread.sleep(1000);
-        } while (this.tokenFacade.check(userId, token).getStatus().equals(TokenStatus.WAIT));
+
+        assertThrows(
+                CommonException.class,
+                () -> this.tokenFacade.check(userId, token)
+        );
+
+        this.tokenFacade.refreshTokenQueue(1);
+
+        assertEquals(
+                TokenStatus.ACTIVE,
+                this.tokenFacade.check(userId, token).getStatus()
+        );
 
         Long seatId = this.concertFacade.occupyConcertSeat(
                 concertSeatId,

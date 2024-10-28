@@ -1,10 +1,10 @@
 package com.example.concert.e2e;
 
 import com.example.concert.balance.api.BalanceControllerDTO;
-import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.api.ConcertControllerDTO;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
+import com.example.concert.token.TokenFacade;
 import com.example.concert.user.UserFacade;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +34,7 @@ public class ApiTest {
 
     @Autowired private UserFacade userFacade;
     @Autowired private ConcertFacade concertFacade;
+    @Autowired private TokenFacade tokenFacade;
 
     Long userId;
     Long concertId;
@@ -88,11 +88,7 @@ public class ApiTest {
                 .then().log().all()
                 .extract().path("token.id");
 
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.tokenFacade.refreshTokenQueue(1);
 
         // When
         ConcertControllerDTO.GetAvailableTimeslots.Response response = RestAssured.given()
@@ -128,11 +124,7 @@ public class ApiTest {
                 .then().log().all()
                 .extract().path("token.id");
 
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.tokenFacade.refreshTokenQueue(1);
 
         // When
         ConcertControllerDTO.GetAvailableSeats.Response response = RestAssured.given()

@@ -3,6 +3,7 @@ package com.example.concert.common.scheduler;
 import com.example.concert.token.TokenFacade;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
@@ -10,7 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@Transactional
+@Profile("!test")
 @Slf4j
 public class Scheduler {
 
