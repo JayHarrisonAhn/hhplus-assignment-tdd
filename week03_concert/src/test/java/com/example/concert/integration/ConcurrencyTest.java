@@ -4,40 +4,34 @@ import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
 import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
-import com.example.concert.token.TokenFacade;
+import com.example.concert.concert.dto.ConcertSeatPayInfo;
 import com.example.concert.user.UserFacade;
 import com.example.concert.user.domain.User;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
-import com.example.concert.token.domain.TokenStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@ActiveProfiles("dev")
 public class ConcurrencyTest {
 
     @Autowired private BalanceHistoryRepository balanceHistoryRepository;
 
-    @Autowired private TokenFacade tokenFacade;
     @Autowired private BalanceFacade balanceFacade;
     @Autowired private ConcertFacade concertFacade;
     @Autowired private UserFacade userFacade;
@@ -55,7 +49,7 @@ public class ConcurrencyTest {
         ).getId();
     }
 
-    @Test
+    @RepeatedTest(5)
     @DisplayName("20명이 10개 좌석에 동시에 예약 시도시, 20개의 PayHistory 발생(charge + pay)")
     void concurrent20UsersTo10Seats() {
         // Given
@@ -70,48 +64,31 @@ public class ConcurrencyTest {
         ).stream().toList();
 
         // When
-        ExecutorService executor = Executors.newFixedThreadPool(users.size());
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        IntStream.range(0, users.size()).forEach( i -> {
-            User user = users.get(i);
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                System.out.println(user.getId() + " user started to register on thread " + Thread.currentThread().getName());
-                try {
-                    String tokenString = this.tokenFacade.issue(user.getId()).getToken().toString();
+        List<CompletableFuture<Optional<ConcertSeatPayInfo>>> tasks = IntStream.range(0, 20)
+                .<CompletableFuture<Optional<ConcertSeatPayInfo>>>mapToObj( i -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        System.out.println(LocalDateTime.now());
 
-                    TokenStatus tokenStatus = null;
-                    do {
-                        Thread.sleep(1000);
-                        try {
-                            tokenStatus = this.tokenFacade.check(user.getId(), tokenString).getStatus();
-                        } catch (CommonException ignored) {
-                        }
-                    } while (tokenStatus != TokenStatus.ACTIVE);
+                        User user = users.get(i);
 
-                    Long seatId = this.concertFacade.occupyConcertSeat(
-                            seats.get(i % seats.size()).getId(),
-                            user.getId()
-                    ).getId();
+                        Long seatId = this.concertFacade.occupyConcertSeat(
+                                seats.get(i % seats.size()).getId(),
+                                user.getId()
+                        ).getId();
 
-                    this.balanceFacade.charge(user.getId(), 10000L);
+                        this.balanceFacade.charge(user.getId(), 10000L);
 
-                    this.concertFacade.paySeat(
-                            seatId,
-                            user.getId()
-                    );
-                    System.out.println(user.getId() + " user Succeeded");
-                } catch (Exception ignored) {
-                    System.out.println(user.getId() + " user Failed : " + ignored.getMessage());
-                }
-                System.out.println(user.getId() + " user Finished");
-            }, executor);
-            futures.add(future);
-        });
-
-        CompletableFuture<Void> allOfFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        assertDoesNotThrow( () -> allOfFutures.get() );
-        executor.shutdown();
-        System.out.println("All tasks completed.");
+                        return Optional.of(this.concertFacade.paySeat(
+                                seatId,
+                                user.getId()
+                        ));
+                    } catch (CommonException ignored) {
+                        return Optional.empty();
+                    }
+                })).toList();
+        CompletableFuture
+                .allOf(tasks.toArray(new CompletableFuture[0]))
+                .join();
 
         // Then
         // 예약 시도한 User의 PayHistory 갯수가 maxNumOfSeats의 2배인가(charge+pay)
@@ -125,7 +102,7 @@ public class ConcurrencyTest {
         );
     }
 
-    @Test
+    @RepeatedTest(5)
     @DisplayName("20명이 1개 좌석에 동시에 예약 시도시, 1개의 좌석 예약만 발생")
     void concurrent20UsersTo1Seats() {
         // Given
@@ -140,47 +117,29 @@ public class ConcurrencyTest {
         ).stream().toList();
 
         // When
-        ExecutorService executor = Executors.newFixedThreadPool(20);
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        IntStream.range(0, users.size()).forEach( i -> {
-            User user = users.get(i);
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                System.out.println(i + "th user started to register on thread " + Thread.currentThread().getName());
-                try {
-                    String tokenString = this.tokenFacade.issue(user.getId()).getToken().toString();
+        List<CompletableFuture<Optional<ConcertSeatPayInfo>>> tasks = IntStream.range(0, 20)
+                .<CompletableFuture<Optional<ConcertSeatPayInfo>>>mapToObj( i -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        User user = users.get(i);
 
-                    TokenStatus tokenStatus = null;
-                    do {
-                        Thread.sleep(1000);
-                        try {
-                            tokenStatus = this.tokenFacade.check(user.getId(), tokenString).getStatus();
-                        } catch (CommonException ignored) {
-                        }
-                    } while (tokenStatus != TokenStatus.ACTIVE);
+                        Long seatId = this.concertFacade.occupyConcertSeat(
+                                seats.get(0).getId(),
+                                user.getId()
+                        ).getId();
 
-                    Long seatId = this.concertFacade.occupyConcertSeat(
-                            seats.get(0).getId(),
-                            user.getId()
-                    ).getId();
+                        this.balanceFacade.charge(user.getId(), 10000L);
 
-                    this.balanceFacade.charge(user.getId(), 10000L);
-
-                    this.concertFacade.paySeat(
-                            seatId,
-                            user.getId()
-                    );
-                    System.out.println(i + "th user Succeeded");
-                } catch (Exception ignored) {
-                    System.out.println(i + "th user Failed : " + ignored.getMessage());
-                }
-                System.out.println(i + "th user Finished");
-            }, executor);
-            futures.add(future);
-        });
-        CompletableFuture<Void> allOfFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        assertDoesNotThrow( () -> allOfFutures.get() );
-        executor.shutdown();
-        System.out.println("All tasks completed.");
+                        return Optional.of(this.concertFacade.paySeat(
+                                seatId,
+                                user.getId()
+                        ));
+                    } catch (CommonException | ObjectOptimisticLockingFailureException ignored) {
+                        return Optional.empty();
+                    }
+                })).toList();
+        CompletableFuture
+                .allOf(tasks.toArray(new CompletableFuture[0]))
+                .join();
 
         // Then
         // Concert Timeslot 내 모든 좌석 중 한 곳에서만 예약이 되었는가
