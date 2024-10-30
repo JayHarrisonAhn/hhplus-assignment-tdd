@@ -103,10 +103,10 @@ public class ConcurrencyTest {
     }
 
     @RepeatedTest(5)
-    @DisplayName("20명이 1개 좌석에 동시에 예약 시도시, 1개의 좌석 예약만 발생")
-    void concurrent20UsersTo1Seats() {
+    @DisplayName("200명이 1개 좌석에 동시에 예약 시도시, 1개의 좌석 예약만 발생")
+    void concurrent200UsersTo1Seats() {
         // Given
-        List<User> users = IntStream.range(0, 20)
+        List<User> users = IntStream.range(0, 200)
                 .mapToObj( i -> userFacade.createUser(String.valueOf(i)))
                 .toList();
 
@@ -117,7 +117,7 @@ public class ConcurrencyTest {
         ).stream().toList();
 
         // When
-        List<CompletableFuture<Optional<ConcertSeatPayInfo>>> tasks = IntStream.range(0, 20)
+        List<CompletableFuture<Optional<ConcertSeatPayInfo>>> tasks = IntStream.range(0, 200)
                 .<CompletableFuture<Optional<ConcertSeatPayInfo>>>mapToObj( i -> CompletableFuture.supplyAsync(() -> {
                     try {
                         User user = users.get(i);

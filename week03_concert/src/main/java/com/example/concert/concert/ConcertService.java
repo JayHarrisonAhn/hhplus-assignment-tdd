@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
@@ -67,6 +66,11 @@ public class ConcertService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_TIMESLOT_NOT_FOUND));
     }
 
+    ConcertTimeslotOccupancy findConcertTimeslotOccupancy(Long timeslotId) {
+        return this.concertTimeslotOccupancyRepository.findByConcertTimeslotId(timeslotId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_TIMESLOT_NOT_FOUND));
+    }
+
     List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
         findConcertTimeslot(concertTimeslotId);
 
@@ -79,10 +83,9 @@ public class ConcertService {
                 ).toList();
         concertSeatRepository.saveAll(concertSeats);
 
-        ConcertTimeslotOccupancy concertTimeslotOccupancy = concertTimeslotOccupancyRepository
-                .findByConcertTimeslotId(concertTimeslotId);
+        ConcertTimeslotOccupancy concertTimeslotOccupancy = this.findConcertTimeslotOccupancy(concertTimeslotId);
 
-        concertTimeslotOccupancy.increaseOccupiedSeatAmount(concertSeats.size());
+        concertTimeslotOccupancy.increaseMaxSeatAmount(concertSeats.size());
 
         return concertSeats;
     }

@@ -42,6 +42,9 @@ public class ConcertSeat {
     @Nullable
     LocalDateTime occupiedAt;
 
+    @Version
+    Integer version;
+
     public void occupy(Long userId, LocalDateTime occupiedAt) {
         if (this.occupiedAt != null && this.occupiedAt.plusMinutes(10).isAfter(LocalDateTime.now())) {
             throw new CommonException(CommonErrorCode.CONCERT_SEAT_ALREADY_OCCUPIED);
