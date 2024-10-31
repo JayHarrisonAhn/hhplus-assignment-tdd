@@ -1,38 +1,28 @@
 package com.example.concert.integration;
 
+import com.example.concert.TestContainerConfig;
 import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
-import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
-import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.token.TokenFacade;
 import com.example.concert.token.domain.TokenStatus;
 import com.example.concert.user.UserFacade;
-import com.example.concert.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(TestContainerConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScenarioTest {
 
@@ -104,3 +94,4 @@ public class ScenarioTest {
         );
     }
 }
+

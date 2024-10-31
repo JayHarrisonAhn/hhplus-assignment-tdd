@@ -1,6 +1,9 @@
 package com.example.concert.integration;
 
+import com.example.concert.TestContainerConfig;
 import com.example.concert.balance.BalanceFacade;
+import com.example.concert.balance.domain.balance.BalanceRepository;
+import com.example.concert.balance.domain.balancehistory.BalanceHistory;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
 import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
@@ -10,27 +13,27 @@ import com.example.concert.user.domain.User;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.annotation.DirtiesContext;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(TestContainerConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ConcurrencyTest {
 
     @Autowired private BalanceHistoryRepository balanceHistoryRepository;
+    @Autowired private BalanceRepository balanceRepository;
 
     @Autowired private BalanceFacade balanceFacade;
     @Autowired private ConcertFacade concertFacade;
@@ -95,9 +98,9 @@ public class ConcurrencyTest {
         assertEquals(
                 seats.size() * 2,
                 users.stream().mapToInt( user ->
-                    this.balanceHistoryRepository.findAllByUserIdEquals(
-                            user.getId()
-                    ).size()
+                        this.balanceHistoryRepository.findAllByUserIdEquals(
+                                user.getId()
+                        ).size()
                 ).reduce(0, Integer::sum)
         );
     }
@@ -161,4 +164,36 @@ public class ConcurrencyTest {
                 ).reduce(0, Integer::sum)
         );
     }
+
+    @RepeatedTest(5)
+    @DisplayName("1개의 사용자 계좌에 동시에 100건의 잔액 충전 요청")
+    void concurrent100ChargeToBalance() {
+        // Given
+        long chargeAmount = 10000L;
+        User user = userFacade.createUser("user");
+
+        // When
+        AtomicInteger success = new AtomicInteger(0);
+        List<CompletableFuture<Optional<BalanceHistory>>> tasks = IntStream.range(0, 100)
+                .<CompletableFuture<Optional<BalanceHistory>>>mapToObj( i -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        BalanceHistory balanceHistory = balanceFacade.charge(user.getId(), chargeAmount);
+                        success.incrementAndGet();
+                        return Optional.of(balanceHistory);
+                    } catch (CommonException | ObjectOptimisticLockingFailureException ignored) {
+                        return Optional.empty();
+                    }
+                })).toList();
+        CompletableFuture
+                .allOf(tasks.toArray(new CompletableFuture[0]))
+                .join();
+
+        // Then
+        // Concert Timeslot 내 모든 좌석 중 한 곳에서만 예약이 되었는가
+        assertEquals(
+                success.get() * chargeAmount,
+                this.balanceFacade.findBalanceByUserId(user.getId()).getBalance()
+        );
+    }
 }
+

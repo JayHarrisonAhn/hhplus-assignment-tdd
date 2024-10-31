@@ -1,0 +1,18 @@
+version: "3"
+services:
+  mariadb:
+    image: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      - TZ="Asia/Seoul"
+      - ALLOW_EMPTY_PASSWORD=no
+      - MARIADB_ROOT_PASSWORD=password
+      - MARIADB_USER=username
+      - MARIADB_DATABASE=concert
+      - MARIADB_PASSWORD=password
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
