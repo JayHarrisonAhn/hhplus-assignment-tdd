@@ -103,6 +103,14 @@ public class ConcurrencyTest {
                         ).size()
                 ).reduce(0, Integer::sum)
         );
+
+        assertEquals(
+                seats.size(),
+                concertFacade
+                        .findConcertTimeslots(concertId)
+                        .get(0)
+                        .occupiedSeatAmount()
+        );
     }
 
     @RepeatedTest(5)
@@ -113,11 +121,11 @@ public class ConcurrencyTest {
                 .mapToObj( i -> userFacade.createUser(String.valueOf(i)))
                 .toList();
 
-        List<ConcertSeat> seats = this.concertFacade.createConcertSeats(
+        ConcertSeat seat = this.concertFacade.createConcertSeats(
                 this.concertTimeslotId,
                 10000L,
                 IntStream.range(0, 10).mapToObj( i -> "A-" + i).toList()
-        ).stream().toList();
+        ).get(0);
 
         // When
         List<CompletableFuture<Optional<ConcertSeatPayInfo>>> tasks = IntStream.range(0, 200)
@@ -126,7 +134,7 @@ public class ConcurrencyTest {
                         User user = users.get(i);
 
                         Long seatId = this.concertFacade.occupyConcertSeat(
-                                seats.get(0).getId(),
+                                seat.getId(),
                                 user.getId()
                         ).getId();
 
@@ -150,8 +158,15 @@ public class ConcurrencyTest {
                 this.concertFacade
                         .findConcertSeats(this.concertTimeslotId)
                         .stream()
-                        .filter( seat -> seat.getUserId() != null)
+                        .filter( s -> s.getUserId() != null)
                         .count()
+        );
+        assertEquals(
+                1,
+                concertFacade
+                        .findConcertTimeslots(concertId)
+                        .get(0)
+                        .occupiedSeatAmount()
         );
 
         // 예약 시도한 User의 PayHistory 갯수가 2개인가(charge+pay)
