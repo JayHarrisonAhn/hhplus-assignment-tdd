@@ -10,8 +10,11 @@
 - [마일스톤](#마일스톤)
 - [ERD](#ERD)
 - [API 명세](#API-명세)
+- [동시성 문제 분석](#동시성-문제-분석)
 
 ## 요구사항 분석 및 시퀀스 다이어그램
+<details>
+
 ### 대기열
 아래의 기능에 접근하기 위한 토큰을 발급한다.
 
@@ -173,11 +176,17 @@ sequenceDiagram
         end
     end
 ```
+</details>
 
 ## 플로우차트
+<details>
+
 ![Flow Chart Image](docs/flowchart.svg)
+</details>
 
 ## 마일스톤
+<details>
+
 최종 기간 : 3주차~5주차
 
 모든 기능의 완성에는 테스트까지를 포함
@@ -211,9 +220,11 @@ gantt
     콘서트 타임슬롯 및 좌석 확인 로직 제작 : task7, 2023-10-20, 1d
     좌석 점유 및 결제 로직 제작(Pay모듈 활용): task8, 2023-10-21, 2d
 ```
+</details>
 
 ## ERD
 
+<details>
 - Foreign Key에 관하여
   - Database의 정규화와 데이터 보호 등을 위해서는 Foreign Key를 설정해야 한다.
   - 하지만 현실적으로는 DB Lock에 의한 Foreign key의 연쇄 lock 등으로 인해 DB 성능이 급격히 감소한다.
@@ -281,9 +292,16 @@ erDiagram
 "PayHistory" }o--|| "User": pay
 "Token" |o--|| "User": has
 ```
+</details>
 
 ## API 명세
+
+<details>
 Swagger를 이용하여 API 명세를 문서화하였습니다.
 
 [Swagger Full API List pdf](docs/swagger.pdf)
 ![Swagger List Capture](docs/swagger.png)
+</details>
+
+## 동시성 문제 분석
+[보고서](docs/STEP11_REPORT.MD)
