@@ -2,27 +2,23 @@ package com.example.concert.common.scheduler;
 
 import com.example.concert.token.TokenFacade;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Profile("!test")
 @Slf4j
+@RequiredArgsConstructor
 public class Scheduler {
 
-    public Scheduler(TokenFacade tokenFacade) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private TokenFacade tokenFacade;
 
-        Runnable task = () -> {
-            tokenFacade.refreshTokenQueue(5);
-            log.info("Token refreshed");
-        };
-
-        scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+    @Scheduled(fixedDelay = 1000)
+    private void tokenScheduler() {
+        tokenFacade.refreshTokenQueue(5);
+        log.info("Token refreshed");
     }
 }
