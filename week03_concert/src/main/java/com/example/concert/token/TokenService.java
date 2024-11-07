@@ -22,6 +22,7 @@ public class TokenService {
         LocalDateTime now = LocalDateTime.now();
 
         Token token = Token.builder()
+                .token(UUID.randomUUID())
                 .userId(userId)
                 .status(TokenStatus.WAIT)
                 .createdAt(now)
@@ -52,6 +53,7 @@ public class TokenService {
             Optional<Token> token = this.tokenRepository.findTopByStatusEqualsOrderByCreatedAtDesc(TokenStatus.WAIT);
             if (token.isPresent()) {
                 token.get().activate(now);
+                this.tokenRepository.save(token.get());
             } else {
                 break;
             }
