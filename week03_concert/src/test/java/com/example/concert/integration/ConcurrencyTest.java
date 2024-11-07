@@ -1,6 +1,6 @@
 package com.example.concert.integration;
 
-import com.example.concert.TestContainerConfig;
+import com.example.concert.TestEnv;
 import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balance.BalanceRepository;
 import com.example.concert.balance.domain.balancehistory.BalanceHistory;
@@ -13,10 +13,7 @@ import com.example.concert.user.domain.User;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +24,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Import(TestContainerConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ConcurrencyTest {
+public class ConcurrencyTest extends TestEnv {
 
     @Autowired private BalanceHistoryRepository balanceHistoryRepository;
     @Autowired private BalanceRepository balanceRepository;
@@ -43,7 +37,8 @@ public class ConcurrencyTest {
     Long concertTimeslotId;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
         this.concertId = this.concertFacade.createConcert("아이유 연말콘서트").getId();
         this.concertTimeslotId = this.concertFacade.createConcertTimeslot(
                 this.concertId,

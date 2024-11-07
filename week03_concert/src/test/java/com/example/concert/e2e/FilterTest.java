@@ -1,6 +1,6 @@
 package com.example.concert.e2e;
 
-import com.example.concert.TestContainerConfig;
+import com.example.concert.TestEnv;
 import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
@@ -12,22 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(TestContainerConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class FilterTest {
+public class FilterTest extends TestEnv {
 
     @LocalServerPort
     private int port;
@@ -42,7 +35,8 @@ public class FilterTest {
     List<Long> concertSeatIds;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
         this.userId = this.userFacade.createUser("user aaa").getId();
         this.concertId = this.concertFacade.createConcert("아이유 연말콘서트").getId();
         this.concertTimeslotId = this.concertFacade.createConcertTimeslot(

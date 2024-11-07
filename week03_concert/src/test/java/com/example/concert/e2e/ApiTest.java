@@ -1,5 +1,6 @@
 package com.example.concert.e2e;
 
+import com.example.concert.TestEnv;
 import com.example.concert.TestContainerConfig;
 import com.example.concert.balance.api.BalanceControllerDTO;
 import com.example.concert.concert.ConcertFacade;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestContainerConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ApiTest {
+public class ApiTest extends TestEnv {
 
     @LocalServerPort
     private int port;
@@ -41,7 +42,8 @@ public class ApiTest {
     List<Long> concertSeatIds;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
         this.userId = this.userFacade.createUser("user aaa").getId();
         this.concertId = this.concertFacade.createConcert("아이유 연말콘서트").getId();
         this.concertTimeslotId = this.concertFacade.createConcertTimeslot(

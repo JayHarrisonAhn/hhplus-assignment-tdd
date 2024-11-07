@@ -1,6 +1,6 @@
 package com.example.concert.integration;
 
-import com.example.concert.TestContainerConfig;
+import com.example.concert.TestEnv;
 import com.example.concert.balance.BalanceFacade;
 import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepository;
 import com.example.concert.common.error.CommonException;
@@ -12,19 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Import(TestContainerConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ScenarioTest {
+public class ScenarioTest extends TestEnv {
 
     @Autowired private BalanceHistoryRepository balanceHistoryRepository;
 
@@ -39,7 +33,8 @@ public class ScenarioTest {
     Long concertSeatId;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
         this.userId = this.userFacade.createUser("user name").getId();
         this.concertId = this.concertFacade.createConcert("아이유 연말콘서트").getId();
         this.concertTimeslotId = this.concertFacade.createConcertTimeslot(
