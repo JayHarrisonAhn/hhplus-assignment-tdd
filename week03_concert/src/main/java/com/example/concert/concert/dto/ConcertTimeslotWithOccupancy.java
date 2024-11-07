@@ -1,5 +1,6 @@
 package com.example.concert.concert.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record ConcertTimeslotWithOccupancy(
@@ -9,5 +10,5 @@ public record ConcertTimeslotWithOccupancy(
         LocalDateTime reservationStartTime,
         Integer maxSeatAmount,
         Integer occupiedSeatAmount
-) {
+) implements Serializable {
 }

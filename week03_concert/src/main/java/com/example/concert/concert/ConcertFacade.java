@@ -12,6 +12,7 @@ import com.example.concert.user.UserService;
 import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ public class ConcertFacade {
         return concertService.createConcertSeats(concertTimeslotId, price, seatIds);
     }
 
+    @Cacheable(value = "concert:timeslot", key = "#concertId", cacheManager = "redisCacheManager")
     public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
         Concert concert = concertService.findConcert(concertId);
 
