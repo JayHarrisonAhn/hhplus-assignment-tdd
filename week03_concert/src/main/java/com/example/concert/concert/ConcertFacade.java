@@ -8,6 +8,7 @@ import com.example.concert.concert.domain.concerttimeslotoccupancy.ConcertTimesl
 import com.example.concert.concert.dto.ConcertSeatPayInfo;
 import com.example.concert.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.balance.BalanceService;
+import com.example.concert.token.TokenService;
 import com.example.concert.user.UserService;
 import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class ConcertFacade {
     private final ConcertService concertService;
     private final UserService userService;
     private final BalanceService balanceService;
+    private final TokenService tokenService;
 
     public Concert createConcert(String name) {
         return concertService.createConcert(name);
@@ -52,7 +55,7 @@ public class ConcertFacade {
         return concertService.findConcertSeats(timeslot.getId());
     }
 
-    public ConcertSeat occupyConcertSeat(Long seatId, Long userId) {
+    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, Optional<String> tokenString) {
         User user = userService.findByUserId(userId);
 
         ConcertSeat seat = concertService.findConcertSeat(seatId);
@@ -62,6 +65,8 @@ public class ConcertFacade {
         ConcertTimeslotOccupancy timeslotOccupancy = concertService.findConcertTimeslotOccupancy(seat.getConcertTimeslotId());
 
         timeslotOccupancy.increaseOccupiedSeatAmount();
+
+        tokenString.ifPresent(tokenService::expireToken);
 
         return seat;
     }

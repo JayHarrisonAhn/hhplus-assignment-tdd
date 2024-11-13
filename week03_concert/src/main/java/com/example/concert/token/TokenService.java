@@ -59,4 +59,10 @@ public class TokenService {
             }
         }
     }
+
+    public void expireToken(String tokenString) {
+        Token token = this.check(tokenString);
+        token.expire(LocalDateTime.now());
+        this.tokenRepository.save(token);
+    }
 }

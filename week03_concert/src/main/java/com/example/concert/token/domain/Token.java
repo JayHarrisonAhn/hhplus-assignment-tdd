@@ -49,4 +49,9 @@ public class Token implements Serializable {
         this.status = TokenStatus.ACTIVE;
         this.updatedAt = updatedAt;
     }
+
+    public void expire(LocalDateTime updatedAt) {
+        this.status = TokenStatus.EXPIRED;
+        this.updatedAt = updatedAt;
+    }
 }

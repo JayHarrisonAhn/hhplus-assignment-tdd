@@ -71,7 +71,8 @@ public class ConcurrencyTest extends TestEnv {
 
                         Long seatId = this.concertFacade.occupyConcertSeat(
                                 seats.get(i % seats.size()).getId(),
-                                user.getId()
+                                user.getId(),
+                                Optional.empty()
                         ).getId();
 
                         this.balanceFacade.charge(user.getId(), 10000L);
@@ -130,7 +131,8 @@ public class ConcurrencyTest extends TestEnv {
 
                         Long seatId = this.concertFacade.occupyConcertSeat(
                                 seat.getId(),
-                                user.getId()
+                                user.getId(),
+                                Optional.empty()
                         ).getId();
 
                         this.balanceFacade.charge(user.getId(), 10000L);

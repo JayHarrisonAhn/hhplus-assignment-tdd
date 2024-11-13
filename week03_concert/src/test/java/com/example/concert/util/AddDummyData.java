@@ -2,6 +2,7 @@ package com.example.concert.util;
 
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.domain.concert.Concert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ public class AddDummyData {
     @Autowired private ConcertFacade concertFacade;
 
     @Test
+    @Disabled
     void insertDummyData() {
         for (int i = 0; i < 100; i++) {
             // Create Concert

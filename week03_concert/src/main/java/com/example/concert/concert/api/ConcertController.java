@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,11 +60,13 @@ public class ConcertController {
             @RequestBody OccupySeat.Request request,
             @PathVariable("concertId") Long concertId,
             @PathVariable("timeSlotId") Long timeSlotId,
-            @PathVariable("seatId") Long seatId
+            @PathVariable("seatId") Long seatId,
+            @RequestHeader("Token") String token
     ) {
         ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(
                 seatId,
-                request.getUserId()
+                request.getUserId(),
+                Optional.of(token)
         );
         return OccupySeat.Response.builder()
                 .seat(
