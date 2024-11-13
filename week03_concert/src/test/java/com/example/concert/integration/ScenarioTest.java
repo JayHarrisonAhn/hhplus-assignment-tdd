@@ -74,6 +74,11 @@ public class ScenarioTest extends TestEnv {
                 Optional.empty()
         ).getId();
 
+        assertThrows(
+                CommonException.class,
+                () -> this.tokenFacade.check(userId, token)
+        );
+
         this.balanceFacade.charge(userId, 10000L);
 
         this.concertFacade.paySeat(

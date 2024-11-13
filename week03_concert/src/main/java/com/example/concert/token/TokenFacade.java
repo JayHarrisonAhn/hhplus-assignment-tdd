@@ -1,10 +1,14 @@
 package com.example.concert.token;
 
+import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.domain.Token;
 import com.example.concert.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -28,5 +32,11 @@ public class TokenFacade {
 
     public void refreshTokenQueue(Integer amount) {
         this.tokenService.activateTokens(amount);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void expireToken(ConcertSeatOccupyEvent concertSeatOccupyEvent) {
+        this.tokenService.expireToken(concertSeatOccupyEvent.tokenString());
     }
 }
