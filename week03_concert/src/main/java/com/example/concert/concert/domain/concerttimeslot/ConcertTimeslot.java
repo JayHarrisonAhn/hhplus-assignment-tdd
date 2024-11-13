@@ -1,8 +1,6 @@
 package com.example.concert.concert.domain.concerttimeslot;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +13,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        indexes = @Index(
+                name = "idx_concert_id",
+                columnList = "concertId, reservationStartTime"
+        )
+)
 public class ConcertTimeslot {
 
     @Id

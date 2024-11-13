@@ -15,7 +15,6 @@ public class TestEnv {
 
     @BeforeEach
     protected void setUp() {
-        System.out.println("sdlifjslidfjlsidjlifjsildjlf");
         redissonClient.getKeys().flushdb();
         redissonClient.getKeys().flushall();
     }

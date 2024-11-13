@@ -23,6 +23,9 @@ public interface ConcertTimeslotRepository extends JpaRepository<ConcertTimeslot
             ConcertTimeslotOccupancy occ
         ON
             ts.concertId=:concertId
+            AND ts.id=occ.concertTimeslotId
+        ORDER BY
+            ts.concertStartTime
     """)
     List<ConcertTimeslotWithOccupancy> findAllByConcertIdWithOccupancy(Long concertId);
 }
