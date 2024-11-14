@@ -71,8 +71,10 @@ public class ScenarioTest extends TestEnv {
         Long seatId = this.concertFacade.occupyConcertSeat(
                 concertSeatId,
                 userId,
-                Optional.empty()
+                Optional.of(token)
         ).getId();
+
+        Thread.sleep(1000);
 
         assertThrows(
                 CommonException.class,

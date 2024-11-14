@@ -66,10 +66,9 @@ public class ConcertFacade {
         ConcertTimeslotOccupancy timeslotOccupancy = concertService.findConcertTimeslotOccupancy(seat.getConcertTimeslotId());
         timeslotOccupancy.increaseOccupiedSeatAmount();
 
-        tokenString.ifPresent(token -> {
-            ConcertSeatOccupyEvent event = new ConcertSeatOccupyEvent(token);
-            eventPublisher.publishEvent(event);
-        });
+        eventPublisher.publishEvent(
+                new ConcertSeatOccupyEvent(tokenString)
+        );
 
         return seat;
     }

@@ -37,6 +37,8 @@ public class TokenFacade {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void expireToken(ConcertSeatOccupyEvent concertSeatOccupyEvent) {
-        this.tokenService.expireToken(concertSeatOccupyEvent.tokenString());
+        concertSeatOccupyEvent
+                .tokenString()
+                .ifPresent(this.tokenService::expireToken);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.concert.concert.event;
 
+import java.util.Optional;
+
 public record ConcertSeatOccupyEvent(
-        String tokenString
+        Optional<String> tokenString
 ) {
 }

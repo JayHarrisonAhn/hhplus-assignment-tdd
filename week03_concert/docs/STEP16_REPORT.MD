@@ -45,10 +45,9 @@ public ConcertSeat occupyConcertSeat(Long seatId, Long userId, Optional<String> 
     timeslotOccupancy.increaseOccupiedSeatAmount();
 
     // 개선 후 코드
-    tokenString.ifPresent(token -> {
-        ConcertSeatOccupyEvent event = new ConcertSeatOccupyEvent(token);
-        eventPublisher.publishEvent(event);
-    });
+    eventPublisher.publishEvent(
+            new ConcertSeatOccupyEvent(tokenString)
+    );
 
     return seat;
 }
@@ -57,7 +56,7 @@ public ConcertSeat occupyConcertSeat(Long seatId, Long userId, Optional<String> 
 #### [이벤트 객체](../src/main/java/com/example/concert/concert/event/ConcertSeatOccupyEvent.java)
 ```java
 public record ConcertSeatOccupyEvent(
-        String tokenString
+        Optional<String> tokenString
 ) {
 }
 ```
@@ -67,7 +66,9 @@ public record ConcertSeatOccupyEvent(
 @Async
 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 public void expireToken(ConcertSeatOccupyEvent concertSeatOccupyEvent) {
-    this.tokenService.expireToken(concertSeatOccupyEvent.tokenString());
+  concertSeatOccupyEvent
+          .tokenString()
+          .ifPresent(this.tokenService::expireToken);
 }
 ```
 
@@ -102,6 +103,8 @@ void tokenShouldExpire_afterConcertSeatOccupy() throws InterruptedException {
   1. 이벤트가 발생하는 함수 실행
   2. 이벤트 리스너를 Spy로 생성하고, 리스너 함수 실행여부를 확인
 - Async로 인한 비동기 실행은 `Thread.sleep()`으로 기다린 다음 확인
+- 전체 테스트 수행 결과
+![transaction_alltests.png](transaction_alltests.png)
 
 ## 그 외 알아본 것들
 #### repository.saveAndFlush
