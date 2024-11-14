@@ -119,6 +119,9 @@ void tokenShouldExpire_afterConcertSeatOccupy() throws InterruptedException {
 
 ## 앞으로 공부해야 할 것
 - MSA 적용을 위한
+  - 마이크로서비스 분리
+    - Database per Service 패턴
+    - 전체 로직을 한 트랜잭션만으로 수행하지 못 할 수 있음
   - 보상 트랜잭션
     - Transaction을 이용하지 못하는 상태에서, 특정 로직 실패시 rollback을 어떻게 시킬 것인가? 
     - Saga 패턴, transactional outbox 패턴, 서킷브레이커 패턴 등..
