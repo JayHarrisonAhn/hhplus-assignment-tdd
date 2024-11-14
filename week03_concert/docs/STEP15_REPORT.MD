@@ -81,3 +81,26 @@ ORDER BY reservation_start_time;
   - ![index_before](index_before.png)
   - 인덱스 적용 후 `0.0035s (10회 평균)`
   - ![index_after](index_after.png)
+
+## 기타 알아본 점
+### EXPLAIN 과 ANALYZE의 차이
+- EXPLAIN은 쿼리를 실행하지 않고, 쿼리 수행 계획을 출력
+- ANALYZE는 쿼리를 실제로 실행한 후, 성능과 통계를 측정하여 출력
+  - MySQL 10.1.0부터 EXPLAIN ANALYZE -> ANALYZE로 실행방법이 변경됨
+- ANALYZE FORMAT=JSON 은 더 많은 데이터 보여줌
+
+### EXPLAIN / ANALYZE column별 의미
+- type : row가 table에서 검색되는 방법
+- possible_keys : row를 탐색하는데 이용되는 Key
+- rows : 각 lookup당 얼마나 많은 row가 탐색될 것인지 추정치
+- extra
+  - using filesore : 정렬을 위해 디스크 기반 머지 소트를 수행한 결과를 바탕으로 row 반환
+
+### JPA Open in View
+- api 요청부터 응답까지 영속성 콘텍스트를 유지하는 설정
+- jpa.open-in-view : true
+  - transaction이 끝나도 connection을 미반납
+  - api 응답이 끝나야 connection을 반납
+- jpa.open-in-view : false
+  - transaction이 끝나면 DB Cnnection 즉시 반납
+  - 트랜잭션 외부에서 lazy 로딩시 문제 발생 가능
