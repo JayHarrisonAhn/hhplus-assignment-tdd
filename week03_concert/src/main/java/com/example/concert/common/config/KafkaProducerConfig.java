@@ -20,7 +20,7 @@ public class KafkaProducerConfig {
 
     private final Environment env;
 
-    @Value("${spring.kafka.producer.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVERS_CONFIG;
 
     public Map<String, Object> producerConfig() {

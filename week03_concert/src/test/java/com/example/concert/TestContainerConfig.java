@@ -33,6 +33,6 @@ public class TestContainerConfig {
 
         kafka = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
         kafka.start();
-        System.setProperty("spring.kafka.producer.bootstrap-servers", kafka.getBootstrapServers());
+        System.setProperty("spring.kafka.bootstrap-servers", kafka.getBootstrapServers());
     }
 }
