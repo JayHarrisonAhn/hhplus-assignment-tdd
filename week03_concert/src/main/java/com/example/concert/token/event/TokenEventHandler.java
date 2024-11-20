@@ -2,12 +2,11 @@ package com.example.concert.token.event;
 
 import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.TokenFacade;
-import com.example.concert.token.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -15,10 +14,12 @@ public class TokenEventHandler {
 
     private final TokenFacade tokenFacade;
 
-    @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void expireToken(ConcertSeatOccupyEvent concertSeatOccupyEvent) {
-        concertSeatOccupyEvent
+    private final ObjectMapper objectMapper;
+
+    @KafkaListener(topics = "concert.seat-occupy", groupId = "group_id")
+    public void expireToken(String message) throws JsonProcessingException {
+        ConcertSeatOccupyEvent event = objectMapper.readValue(message, ConcertSeatOccupyEvent.class);
+        event
                 .tokenString()
                 .ifPresent(this.tokenFacade::expireToken);
     }

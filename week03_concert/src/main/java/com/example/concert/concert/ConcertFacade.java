@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class ConcertFacade {
     private final UserService userService;
     private final BalanceService balanceService;
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public Concert createConcert(String name) {
         return concertService.createConcert(name);
@@ -66,7 +67,8 @@ public class ConcertFacade {
         ConcertTimeslotOccupancy timeslotOccupancy = concertService.findConcertTimeslotOccupancy(seat.getConcertTimeslotId());
         timeslotOccupancy.increaseOccupiedSeatAmount();
 
-        eventPublisher.publishEvent(
+        kafkaTemplate.send(
+                "concert.seat-occupy",
                 new ConcertSeatOccupyEvent(tokenString)
         );
 

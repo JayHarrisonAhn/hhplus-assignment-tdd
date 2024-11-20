@@ -1,21 +1,17 @@
 package com.example.concert.integration;
 
 import com.example.concert.TestEnv;
-import com.example.concert.balance.BalanceFacade;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
-import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.TokenFacade;
-import com.example.concert.token.event.TokenEventHandler;
 import com.example.concert.user.UserFacade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +23,7 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 public class EventTest extends TestEnv {
 
-    @SpyBean private TokenEventHandler tokenEventHandler;
-
-    @Autowired private TokenFacade tokenFacade;
+    @SpyBean private TokenFacade tokenFacade;
     @Autowired private ConcertFacade concertFacade;
     @Autowired private UserFacade userFacade;
 
@@ -60,7 +54,7 @@ public class EventTest extends TestEnv {
 
         // Then
         Thread.sleep(1000);
-        verify(tokenEventHandler, times(1))
-                .expireToken(any(ConcertSeatOccupyEvent.class));
+        verify(tokenFacade, times(1))
+                .expireToken(token.toString());
     }
 }
