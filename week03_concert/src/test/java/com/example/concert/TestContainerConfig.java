@@ -3,6 +3,7 @@ package com.example.concert;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration
@@ -15,6 +16,9 @@ public class TestContainerConfig {
     private static GenericContainer mariadb;
     private static final String MARIADB_IMAGE = "mariadb:11.5";
 
+    private static KafkaContainer kafka;
+    private static final String KAFKA_IMAGE = "apache/kafka";
+
     static {
         redis = new GenericContainer(DockerImageName.parse(REDIS_IMAGE))
                 .withExposedPorts(REDIS_PORT);
@@ -26,5 +30,9 @@ public class TestContainerConfig {
                 .withDatabaseName("concert")
                 .withUsername("username")
                 .withPassword("password");
+
+        kafka = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
+        kafka.start();
+        System.setProperty("spring.kafka.producer.bootstrap-servers", kafka.getBootstrapServers());
     }
 }

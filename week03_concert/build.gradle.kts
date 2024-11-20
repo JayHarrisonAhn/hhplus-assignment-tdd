@@ -26,6 +26,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 	implementation("org.redisson:redisson-spring-boot-starter:3.37.0")
 
@@ -39,6 +40,8 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter:1.20.2")
 	testImplementation("org.testcontainers:mariadb:1.20.2")
 	testImplementation("io.rest-assured:rest-assured:5.5.0")
+	testImplementation("org.testcontainers:kafka:1.20.3")
+	testImplementation("org.springframework.kafka:spring-kafka-test:3.+")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testRuntimeOnly("org.mariadb.jdbc:mariadb-java-client")
