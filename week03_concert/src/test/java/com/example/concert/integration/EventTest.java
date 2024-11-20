@@ -8,6 +8,7 @@ import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
 import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.TokenFacade;
+import com.example.concert.token.event.TokenEventHandler;
 import com.example.concert.user.UserFacade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +27,11 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 public class EventTest extends TestEnv {
 
-    @SpyBean private TokenFacade tokenFacade;
+    @SpyBean private TokenEventHandler tokenEventHandler;
 
+    @Autowired private TokenFacade tokenFacade;
     @Autowired private ConcertFacade concertFacade;
     @Autowired private UserFacade userFacade;
-    @Autowired private ApplicationEventPublisher eventPublisher;
 
     @Test
     void tokenShouldExpire_afterConcertSeatOccupy() throws InterruptedException {
@@ -59,7 +60,7 @@ public class EventTest extends TestEnv {
 
         // Then
         Thread.sleep(1000);
-        verify(tokenFacade, times(1))
+        verify(tokenEventHandler, times(1))
                 .expireToken(any(ConcertSeatOccupyEvent.class));
     }
 }
