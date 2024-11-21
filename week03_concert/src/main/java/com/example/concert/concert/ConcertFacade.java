@@ -1,7 +1,6 @@
 package com.example.concert.concert;
 
 import com.example.concert.balance.domain.balancehistory.BalanceHistory;
-import com.example.concert.concert.domain.ConcertKafkaMessageProducer;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
@@ -28,8 +27,6 @@ public class ConcertFacade {
     private final ConcertService concertService;
     private final UserService userService;
     private final BalanceService balanceService;
-
-    private final ConcertKafkaMessageProducer concertKafkaMessageProducer;
 
     public Concert createConcert(String name) {
         return concertService.createConcert(name);
@@ -69,7 +66,9 @@ public class ConcertFacade {
                 new ConcertSeatOccupyOutbox.ConcertSeatOccupyEvent(seatId, userId, tokenString)
         );
 
-        concertKafkaMessageProducer.sendConcertSeatOccupyEvent(outbox);
+        try {
+            concertService.produceKafkaMessage(outbox);
+        } catch (Exception ignored) {}
 
         return seat;
     }
@@ -85,5 +84,22 @@ public class ConcertFacade {
                 .seat(seat)
                 .balanceHistory(balanceHistory)
                 .build();
+    }
+
+    public void checkOutboxPublished(Long outboxId) {
+        ConcertSeatOccupyOutbox outbox = concertService.findConcertSeatOccupyOutbox(outboxId);
+
+        outbox.setPublished();
+    }
+
+    public void produceOldAndUnproducedOutboxes(LocalDateTime time) {
+        List<ConcertSeatOccupyOutbox> outboxes = concertService.findUnproducedOutboxesBefore(time);
+
+        outboxes.forEach( outbox -> {
+            try {
+                concertService.produceKafkaMessage(outbox);
+                outbox.setPublished();
+            } catch (Exception ignored) {}
+        });
     }
 }

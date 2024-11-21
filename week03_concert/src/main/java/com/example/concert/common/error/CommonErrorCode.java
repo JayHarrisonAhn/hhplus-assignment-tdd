@@ -14,6 +14,7 @@ public enum CommonErrorCode {
     CONCERT_TIMESLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "CE002", "Concert timeslot not found"),
     CONCERT_SEAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CE003", "Concert seat not found"),
     CONCERT_SEAT_ALREADY_OCCUPIED(HttpStatus.CONFLICT, "CE004", "Concert seat is already occupied by someone"),
+    CONCERT_OUTBOX_NOT_FOUND(HttpStatus.NOT_FOUND, "CE005", "Concert outbox not found"),
 
     BALANCE_INSUFFICIENT(HttpStatus.BAD_REQUEST, "BE001", "Balance insufficient"),
     BALANCE_TRANSACTION_AMOUNT_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "BE002", "Balance transaction amount less than zero"),

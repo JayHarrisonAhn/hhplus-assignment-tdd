@@ -2,6 +2,7 @@ package com.example.concert.concert;
 
 import com.example.concert.common.error.CommonErrorCode;
 import com.example.concert.common.error.CommonException;
+import com.example.concert.concert.domain.ConcertKafkaMessageProducer;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
@@ -30,9 +31,11 @@ public class ConcertService {
     private final ConcertTimeslotOccupancyRepository concertTimeslotOccupancyRepository;
     private final ConcertSeatOccupyOutboxRepository concertSeatOccupyOutboxRepository;
 
+    private final ConcertKafkaMessageProducer concertKafkaMessageProducer;
+
     private final ObjectMapper objectMapper;
 
-    Concert createConcert(String name) {
+    public Concert createConcert(String name) {
         Concert concert = Concert.builder()
                 .name(name)
                 .build();
@@ -40,12 +43,12 @@ public class ConcertService {
         return concert;
     }
 
-    Concert findConcert(Long concertId) {
+    public Concert findConcert(Long concertId) {
         return concertRepository.findById(concertId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_NOT_FOUND));
     }
 
-    ConcertTimeslot createConcertTimeslot(Long concertId, LocalDateTime concertStartTime, LocalDateTime reservationStartTime) {
+    public ConcertTimeslot createConcertTimeslot(Long concertId, LocalDateTime concertStartTime, LocalDateTime reservationStartTime) {
         ConcertTimeslot concertTimeslot = ConcertTimeslot.builder()
                 .concertId(concertId)
                 .concertStartTime(concertStartTime)
@@ -63,21 +66,21 @@ public class ConcertService {
         return concertTimeslot;
     }
 
-    List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
+    public List<ConcertTimeslotWithOccupancy> findConcertTimeslots(Long concertId) {
         return this.concertTimeslotRepository.findAllByConcertIdWithOccupancy(concertId);
     }
 
-    ConcertTimeslot findConcertTimeslot(Long timeslotId) {
+    public ConcertTimeslot findConcertTimeslot(Long timeslotId) {
         return this.concertTimeslotRepository.findById(timeslotId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_TIMESLOT_NOT_FOUND));
     }
 
-    ConcertTimeslotOccupancy findConcertTimeslotOccupancy(Long timeslotId) {
+    public ConcertTimeslotOccupancy findConcertTimeslotOccupancy(Long timeslotId) {
         return this.concertTimeslotOccupancyRepository.findByConcertTimeslotId(timeslotId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_TIMESLOT_NOT_FOUND));
     }
 
-    List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
+    public List<ConcertSeat> createConcertSeats(Long concertTimeslotId, Long price, List<String> seatIds) {
         findConcertTimeslot(concertTimeslotId);
 
         List<ConcertSeat> concertSeats = seatIds.stream().map( seatId ->
@@ -96,16 +99,16 @@ public class ConcertService {
         return concertSeats;
     }
 
-    List<ConcertSeat> findConcertSeats(Long timeslotId) {
+    public List<ConcertSeat> findConcertSeats(Long timeslotId) {
         return this.concertSeatRepository.findAllByConcertTimeslotIdOrderBySeatId(timeslotId);
     }
 
-    ConcertSeat findConcertSeat(Long seatId) {
+    public ConcertSeat findConcertSeat(Long seatId) {
         return this.concertSeatRepository.findById(seatId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_SEAT_NOT_FOUND));
     }
 
-    ConcertSeatOccupyOutbox createOutbox(ConcertSeatOccupyOutbox.ConcertSeatOccupyEvent event) {
+    public ConcertSeatOccupyOutbox createOutbox(ConcertSeatOccupyOutbox.ConcertSeatOccupyEvent event) {
         ConcertSeatOccupyOutbox concertSeatOccupyOutbox = ConcertSeatOccupyOutbox.builder()
                 .event(event)
                 .createdAt(LocalDateTime.now())
@@ -113,5 +116,21 @@ public class ConcertService {
                 .build();
 
         return this.concertSeatOccupyOutboxRepository.saveAndFlush(concertSeatOccupyOutbox);
+    }
+
+    public void produceKafkaMessage(ConcertSeatOccupyOutbox outbox) {
+        concertKafkaMessageProducer.sendConcertSeatOccupyEvent(outbox);
+    }
+
+    public ConcertSeatOccupyOutbox findConcertSeatOccupyOutbox(Long outboxId) {
+        return concertSeatOccupyOutboxRepository.findById(outboxId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_OUTBOX_NOT_FOUND));
+    }
+
+    public List<ConcertSeatOccupyOutbox> findUnproducedOutboxesBefore(LocalDateTime time) {
+        return concertSeatOccupyOutboxRepository.findTop50ByEventStatusEqualsAndCreatedAtBeforeOrderByIdAsc(
+                ConcertSeatOccupyOutbox.EventStatus.INIT,
+                time
+        );
     }
 }

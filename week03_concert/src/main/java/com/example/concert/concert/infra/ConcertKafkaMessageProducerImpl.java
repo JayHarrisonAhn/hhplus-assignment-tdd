@@ -5,6 +5,7 @@ import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOcc
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Primary
@@ -14,6 +15,7 @@ public class ConcertKafkaMessageProducerImpl implements ConcertKafkaMessageProdu
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
+    @Async
     public void sendConcertSeatOccupyEvent(ConcertSeatOccupyOutbox concertSeatOccupyOutbox) {
         kafkaTemplate.send(
                 "concert.seat-occupy",
