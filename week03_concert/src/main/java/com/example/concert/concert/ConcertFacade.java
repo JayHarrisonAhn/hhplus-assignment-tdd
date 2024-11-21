@@ -6,10 +6,10 @@ import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
 import com.example.concert.concert.domain.concerttimeslotoccupancy.ConcertTimeslotOccupancy;
+import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOccupyOutbox;
 import com.example.concert.concert.dto.ConcertSeatPayInfo;
 import com.example.concert.concert.dto.ConcertTimeslotWithOccupancy;
 import com.example.concert.balance.BalanceService;
-import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.user.UserService;
 import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -57,7 +56,7 @@ public class ConcertFacade {
         return concertService.findConcertSeats(timeslot.getId());
     }
 
-    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, Optional<String> tokenString) {
+    public ConcertSeat occupyConcertSeat(Long seatId, Long userId, String tokenString) {
         User user = userService.findByUserId(userId);
 
         ConcertSeat seat = concertService.findConcertSeat(seatId);
@@ -66,9 +65,11 @@ public class ConcertFacade {
         ConcertTimeslotOccupancy timeslotOccupancy = concertService.findConcertTimeslotOccupancy(seat.getConcertTimeslotId());
         timeslotOccupancy.increaseOccupiedSeatAmount();
 
-        concertKafkaMessageProducer.sendConcertSeatOccupyEvent(
-                new ConcertSeatOccupyEvent(seatId, userId, tokenString)
+        ConcertSeatOccupyOutbox outbox = concertService.createOutbox(
+                new ConcertSeatOccupyOutbox.ConcertSeatOccupyEvent(seatId, userId, tokenString)
         );
+
+        concertKafkaMessageProducer.sendConcertSeatOccupyEvent(outbox);
 
         return seat;
     }

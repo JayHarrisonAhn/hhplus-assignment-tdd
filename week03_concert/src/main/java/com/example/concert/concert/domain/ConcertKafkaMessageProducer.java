@@ -1,9 +1,9 @@
 package com.example.concert.concert.domain;
 
-import com.example.concert.concert.event.ConcertSeatOccupyEvent;
+import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOccupyOutbox;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface ConcertKafkaMessageProducer {
-    void sendConcertSeatOccupyEvent(ConcertSeatOccupyEvent concertSeatOccupyEvent);
+    void sendConcertSeatOccupyEvent(ConcertSeatOccupyOutbox concertSeatOccupyOutbox);
 }

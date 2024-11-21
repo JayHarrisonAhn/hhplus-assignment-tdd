@@ -8,6 +8,8 @@ import com.example.concert.balance.domain.balancehistory.BalanceHistoryRepositor
 import com.example.concert.common.error.CommonException;
 import com.example.concert.concert.ConcertFacade;
 import com.example.concert.concert.dto.ConcertSeatPayInfo;
+import com.example.concert.token.TokenFacade;
+import com.example.concert.token.domain.Token;
 import com.example.concert.user.UserFacade;
 import com.example.concert.user.domain.User;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
@@ -32,6 +34,7 @@ public class ConcurrencyTest extends TestEnv {
     @Autowired private BalanceFacade balanceFacade;
     @Autowired private ConcertFacade concertFacade;
     @Autowired private UserFacade userFacade;
+    @Autowired private TokenFacade tokenFacade;
 
     Long concertId;
     Long concertTimeslotId;
@@ -55,6 +58,10 @@ public class ConcurrencyTest extends TestEnv {
                 .mapToObj( i -> userFacade.createUser(String.valueOf(i)))
                 .toList();
 
+        List<Token> tokens = users.stream()
+                .map( user -> tokenFacade.issue(user.getId()))
+                .toList();
+
         List<ConcertSeat> seats = this.concertFacade.createConcertSeats(
                 this.concertTimeslotId,
                 10000L,
@@ -68,11 +75,12 @@ public class ConcurrencyTest extends TestEnv {
                         System.out.println(LocalDateTime.now());
 
                         User user = users.get(i);
+                        Token token = tokens.get(i);
 
                         Long seatId = this.concertFacade.occupyConcertSeat(
                                 seats.get(i % seats.size()).getId(),
                                 user.getId(),
-                                Optional.empty()
+                                token.getToken().toString()
                         ).getId();
 
                         this.balanceFacade.charge(user.getId(), 10000L);
@@ -117,6 +125,10 @@ public class ConcurrencyTest extends TestEnv {
                 .mapToObj( i -> userFacade.createUser(String.valueOf(i)))
                 .toList();
 
+        List<Token> tokens = users.stream()
+                .map( user -> tokenFacade.issue(user.getId()))
+                .toList();
+
         ConcertSeat seat = this.concertFacade.createConcertSeats(
                 this.concertTimeslotId,
                 10000L,
@@ -128,11 +140,12 @@ public class ConcurrencyTest extends TestEnv {
                 .<CompletableFuture<Optional<ConcertSeatPayInfo>>>mapToObj( i -> CompletableFuture.supplyAsync(() -> {
                     try {
                         User user = users.get(i);
+                        Token token = tokens.get(i);
 
                         Long seatId = this.concertFacade.occupyConcertSeat(
                                 seat.getId(),
                                 user.getId(),
-                                Optional.empty()
+                                token.getToken().toString()
                         ).getId();
 
                         this.balanceFacade.charge(user.getId(), 10000L);

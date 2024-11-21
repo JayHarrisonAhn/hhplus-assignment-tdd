@@ -1,6 +1,6 @@
 package com.example.concert.token.consumer;
 
-import com.example.concert.concert.event.ConcertSeatOccupyEvent;
+import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOccupyOutbox;
 import com.example.concert.token.TokenFacade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,11 +16,12 @@ public class TokenKafkaMessageConsumer {
 
     private final ObjectMapper objectMapper;
 
-    @KafkaListener(topics = "concert.seat-occupy", groupId = "group_id")
+    @KafkaListener(topics = "concert.seat-occupy", groupId = "token")
     public void expireToken(String message) throws JsonProcessingException {
-        ConcertSeatOccupyEvent event = objectMapper.readValue(message, ConcertSeatOccupyEvent.class);
-        event
-                .tokenString()
-                .ifPresent(this.tokenFacade::expireToken);
+        ConcertSeatOccupyOutbox event = objectMapper.readValue(message, ConcertSeatOccupyOutbox.class);
+
+        this.tokenFacade.expireToken(
+                event.getEvent().tokenString()
+        );
     }
 }

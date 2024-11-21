@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,7 +70,7 @@ public class ScenarioTest extends TestEnv {
         Long seatId = this.concertFacade.occupyConcertSeat(
                 concertSeatId,
                 userId,
-                Optional.of(token)
+                token
         ).getId();
 
         Thread.sleep(1000);

@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.BDDMockito.*;
@@ -49,7 +48,7 @@ public class EventTest extends TestEnv {
         concertFacade.occupyConcertSeat(
                 concertSeat.getId(),
                 userId,
-                Optional.of(token.toString())
+                token.toString()
         );
 
         // Then

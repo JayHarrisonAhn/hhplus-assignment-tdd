@@ -1,6 +1,5 @@
 package com.example.concert.token;
 
-import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.domain.Token;
 import com.example.concert.user.UserService;
 import jakarta.transaction.Transactional;

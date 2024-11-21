@@ -66,7 +66,7 @@ public class ConcertController {
         ConcertSeat occupiedSeat = concertFacade.occupyConcertSeat(
                 seatId,
                 request.getUserId(),
-                Optional.of(token)
+                token
         );
         return OccupySeat.Response.builder()
                 .seat(

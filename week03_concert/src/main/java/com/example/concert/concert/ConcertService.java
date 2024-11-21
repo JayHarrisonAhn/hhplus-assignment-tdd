@@ -10,7 +10,10 @@ import com.example.concert.concert.domain.concertseat.ConcertSeatRepository;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslotRepository;
 import com.example.concert.concert.domain.concerttimeslotoccupancy.ConcertTimeslotOccupancy;
 import com.example.concert.concert.domain.concerttimeslotoccupancy.ConcertTimeslotOccupancyRepository;
+import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOccupyOutbox;
+import com.example.concert.concert.domain.outboxconcertseatoccupy.ConcertSeatOccupyOutboxRepository;
 import com.example.concert.concert.dto.ConcertTimeslotWithOccupancy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,9 @@ public class ConcertService {
     private final ConcertTimeslotRepository concertTimeslotRepository;
     private final ConcertSeatRepository concertSeatRepository;
     private final ConcertTimeslotOccupancyRepository concertTimeslotOccupancyRepository;
+    private final ConcertSeatOccupyOutboxRepository concertSeatOccupyOutboxRepository;
+
+    private final ObjectMapper objectMapper;
 
     Concert createConcert(String name) {
         Concert concert = Concert.builder()
@@ -97,5 +103,15 @@ public class ConcertService {
     ConcertSeat findConcertSeat(Long seatId) {
         return this.concertSeatRepository.findById(seatId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.CONCERT_SEAT_NOT_FOUND));
+    }
+
+    ConcertSeatOccupyOutbox createOutbox(ConcertSeatOccupyOutbox.ConcertSeatOccupyEvent event) {
+        ConcertSeatOccupyOutbox concertSeatOccupyOutbox = ConcertSeatOccupyOutbox.builder()
+                .event(event)
+                .createdAt(LocalDateTime.now())
+                .eventStatus(ConcertSeatOccupyOutbox.EventStatus.INIT)
+                .build();
+
+        return this.concertSeatOccupyOutboxRepository.saveAndFlush(concertSeatOccupyOutbox);
     }
 }
