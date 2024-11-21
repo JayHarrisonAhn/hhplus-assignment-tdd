@@ -1,4 +1,4 @@
-package com.example.concert.token.event;
+package com.example.concert.token.consumer;
 
 import com.example.concert.concert.event.ConcertSeatOccupyEvent;
 import com.example.concert.token.TokenFacade;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TokenEventHandler {
+public class TokenKafkaMessageConsumer {
 
     private final TokenFacade tokenFacade;
 

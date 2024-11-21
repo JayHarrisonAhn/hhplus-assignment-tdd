@@ -1,6 +1,7 @@
 package com.example.concert.concert;
 
 import com.example.concert.balance.domain.balancehistory.BalanceHistory;
+import com.example.concert.concert.domain.ConcertKafkaMessageProducer;
 import com.example.concert.concert.domain.concert.Concert;
 import com.example.concert.concert.domain.concertseat.ConcertSeat;
 import com.example.concert.concert.domain.concerttimeslot.ConcertTimeslot;
@@ -14,8 +15,6 @@ import com.example.concert.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -31,7 +30,7 @@ public class ConcertFacade {
     private final UserService userService;
     private final BalanceService balanceService;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ConcertKafkaMessageProducer concertKafkaMessageProducer;
 
     public Concert createConcert(String name) {
         return concertService.createConcert(name);
@@ -67,9 +66,8 @@ public class ConcertFacade {
         ConcertTimeslotOccupancy timeslotOccupancy = concertService.findConcertTimeslotOccupancy(seat.getConcertTimeslotId());
         timeslotOccupancy.increaseOccupiedSeatAmount();
 
-        kafkaTemplate.send(
-                "concert.seat-occupy",
-                new ConcertSeatOccupyEvent(tokenString)
+        concertKafkaMessageProducer.sendConcertSeatOccupyEvent(
+                new ConcertSeatOccupyEvent(seatId, userId, tokenString)
         );
 
         return seat;
