@@ -253,7 +253,7 @@ dial i/o timeout
 - 해결
   - localhost 주소를 host.docker.internal로 변경하여 해결
 
-## 추가 : 리소스 제한 테스트
+## 추가 : 리소스 제한 Stress 테스트
 도커 리소스를 제한하여 테스트도 수행
 - cpu : 30% of M2 Mac Mini
 - memory : 512M
