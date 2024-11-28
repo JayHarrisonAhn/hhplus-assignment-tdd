@@ -47,6 +47,7 @@ public class ConcertFacade {
         return concertService.findConcertTimeslots(concert.getId());
     }
 
+    @Cacheable(value = "concert:timeslot:seat", key = "#timeslotId", cacheManager = "redisCacheManager")
     public List<ConcertSeat> findConcertSeats(Long timeslotId) {
         ConcertTimeslot timeslot = concertService.findConcertTimeslot(timeslotId);
 
