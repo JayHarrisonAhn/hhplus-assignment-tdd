@@ -15,7 +15,8 @@ export const options = {
 };
 
 export default function () {
-    const url = `http://host.docker.internal:8080`
+    // const url = `http://host.docker.internal:8080`
+    const url = `http://localhost:8080`
 
     // Create User
     const userRes = http.post(

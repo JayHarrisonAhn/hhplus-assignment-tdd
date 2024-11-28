@@ -253,3 +253,43 @@ dial i/o timeout
 - 해결
   - localhost 주소를 host.docker.internal로 변경하여 해결
 
+## 추가 : 리소스 제한 테스트
+도커 리소스를 제한하여 테스트도 수행
+- cpu : 30% of M2 Mac Mini
+- memory : 512M
+```text
+    deploy:
+      resources:
+        limits:
+          cpus: 0.3
+          memory: 512M
+```
+
+![](./load_limit.png)
+```text
+2024-11-28 12:55:11      ✓ verify status
+2024-11-28 12:55:11 
+2024-11-28 12:55:11      checks.........................: 100.00% 12641 out of 12641
+2024-11-28 12:55:11      data_received..................: 2.5 MB  20 kB/s
+2024-11-28 12:55:11      data_sent......................: 2.3 MB  18 kB/s
+2024-11-28 12:55:11      http_req_blocked...............: avg=24.12µs  min=958ns    med=4.95µs   max=5.97ms   p(90)=10.54µs p(95)=14.83µs 
+2024-11-28 12:55:11      http_req_connecting............: avg=14.63µs  min=0s       med=0s       max=5.8ms    p(90)=0s      p(95)=0s      
+2024-11-28 12:55:11    ✓ http_req_duration..............: avg=531.42ms min=476.62µs med=295.26ms max=5.49s    p(90)=1.39s   p(95)=1.8s    
+2024-11-28 12:55:11        { expected_response:true }...: avg=531.42ms min=476.62µs med=295.26ms max=5.49s    p(90)=1.39s   p(95)=1.8s    
+2024-11-28 12:55:11      http_req_failed................: 0.00%   0 out of 12641
+2024-11-28 12:55:11      http_req_receiving.............: avg=19.08ms  min=7.54µs   med=159.29µs max=697.57ms p(90)=94.05ms p(95)=102.06ms
+2024-11-28 12:55:11      http_req_sending...............: avg=27.23µs  min=2.7µs    med=14.58µs  max=4.81ms   p(90)=35.33µs p(95)=67µs    
+2024-11-28 12:55:11      http_req_tls_handshaking.......: avg=0s       min=0s       med=0s       max=0s       p(90)=0s      p(95)=0s      
+2024-11-28 12:55:11      http_req_waiting...............: avg=512.31ms min=418.45µs med=286.65ms max=5.49s    p(90)=1.3s    p(95)=1.8s    
+2024-11-28 12:55:11      http_reqs......................: 12641   100.705266/s
+2024-11-28 12:55:11      iteration_duration.............: avg=17.08s   min=4.02s    med=18.39s   max=35.9s    p(90)=30.2s   p(95)=31.45s  
+2024-11-28 12:55:11      iterations.....................: 1071    8.532184/s
+2024-11-28 12:55:11      vus............................: 8       min=5              max=250
+2024-11-28 12:55:11      vus_max........................: 250     min=250            max=250
+2024-11-28 12:55:11 
+2024-11-28 12:55:11 
+2024-11-28 12:55:11 running (2m05.5s), 000/250 VUs, 1071 complete and 0 interrupted iterations
+2024-11-28 12:55:11 default ✓ [ 100% ] 000/250 VUs  1m50s
+```
+- 평균 응답시간이 500ms대로 대폭 증가했으나, 실패하지는 않는 것으로 보임
+- vuser 250까지 응답은 정상적으로 이루어지는 것 확인
