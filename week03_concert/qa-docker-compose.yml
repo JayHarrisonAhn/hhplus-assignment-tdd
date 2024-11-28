@@ -1,10 +1,11 @@
 version: "3.9"
-name: "concert-dev"
+name: "concert-qa"
 services:
   mariadb:
+    container_name: mariadb
     image: mariadb
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
       - TZ="Asia/Seoul"
       - ALLOW_EMPTY_PASSWORD=no
@@ -14,6 +15,7 @@ services:
       - MARIADB_PASSWORD=password
 
   redis:
+    container_name: redis
     image: redis
     ports:
       - 6379:6379
@@ -35,9 +37,24 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
+
+  concert:
+    container_name: concert
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - mariadb
+      - redis
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: qa

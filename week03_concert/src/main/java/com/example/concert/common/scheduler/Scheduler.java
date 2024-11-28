@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Scheduler {
 
-    private TokenFacade tokenFacade;
+    private final TokenFacade tokenFacade;
 
     @Scheduled(fixedDelay = 1000)
     private void tokenScheduler() {

@@ -14,3 +14,10 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         show_sql: true
+
+  datasource:
+    hikari:
+      maximum-pool-size: 200 #최대 pool 크기
+      minimum-idle: 10 #최소 pool 크기
+      idle-timeout: 600000 #연결위한 최대 유후 시간
+      max-lifetime: 1800000 #반납된 커넥션의 최대 수명
