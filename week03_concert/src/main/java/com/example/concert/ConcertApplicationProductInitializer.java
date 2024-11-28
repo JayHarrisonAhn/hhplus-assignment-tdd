@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-@Profile("dev")
+@Profile({"dev", "qa"})
 @RequiredArgsConstructor
 public class ConcertApplicationProductInitializer {
 
