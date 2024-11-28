@@ -1,26 +1,33 @@
 # 장애 대응 문서
 
-## 원인 파악
+## 원인 파악 방법
 ### Intellij Profiling
 - Server Application의 어떤 코드에서 지연이 발생하는지 파악 가능
-- 아래 결과는 Stress Test 수행시의 Profiling 결과
-![](./load_flamegraph_before.png)
-- `findConcertSeats` 함수에 많은 부하가 많이 걸린 것을 확인
 
 ## 대응
 ### 장애 포인트
 - 부하테스트에서 실질적인 장애는 발생하지 않았지만, 가상 시나리오로 장애상황을 가정
 - `findConcertSeats` 함수의 부하로 인해 장애가 발생했다고 가정
 
+### 최초 탐지(가정)
+- 모니터링 툴을 통해 p90이 일정시간 이상으로 올라간 것을 탐지
+- Slack 알람을 통해 담당자에게 전파
+
 ### 장애 분석
-위의 Intellij Profiling을 통해 문제 코드를 파악
+![](./load_flamegraph_before.png)
+- Intellij Profiling을 통해 문제 코드를 파악
+- findConcertSeats 함수의 슬로우 쿼리가 원인
+- 부하테스트 실행 시, 5000ms대 부하가 걸리는 것을 확인
+- 장애 등급 : DAU 기준, Medium High등급으로 판단
 
 ### 장애 조치
+- 콘서트 예매 팀에 해당 내용 전파
 - 장애 지점인 `findConcertSeats`에 캐싱 적용
 ```java
 @Cacheable(value = "concert:timeslot:seat", key = "#timeslotId", cacheManager = "redisCacheManager")
 public List<ConcertSeat> findConcertSeats(Long timeslotId) { ... }
 ```
+- 고객 대응 팀에 조치 완료 전파 및 공지 게시 요청
 
 ### 조치 결과
 ![](./load_flamegraph_after.png)
