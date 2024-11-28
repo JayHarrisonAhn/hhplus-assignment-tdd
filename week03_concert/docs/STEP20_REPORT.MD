@@ -66,3 +66,36 @@ public List<ConcertSeat> findConcertSeats(Long timeslotId) { ... }
         auth_identity: 'your-gmail-username@gmail.com'
         auth_password: 'your-gmail-password'
         ```
+
+# 부록
+- 흔히 생각하는 장애는 일정 트래픽이 넘어가는 순간 급격히 발생
+- 이는 보통 db 락과 같은 병목에 의해 발생
+- 그런데, 콘서트 예제는 시나리오 대부분이 db read이므로 해당 문제를 접하지 못함
+- 따라서 코치님 조언을 얻어 실험용 api를 제작해서 문제를 재현해보기로 함
+
+### 테스트용 코드
+- DB pessimistic lock을 이용
+- 정말 테스트만을 위해서, 레이어&아키텍처&클린코드 신경쓰지 않고 컨트롤러 함수 하나로 임시 구현
+  - TestAPITable : Entity
+  - TestAPIRepository : Repository
+- row 생성시 동시성 문제가 있기는 하지만, 실험중 문제는 없기 때문에 부하 테스트에만 집중
+- Connection pool은 max 200으로 상향
+
+```java
+    @Transactional
+    @PostMapping("")
+    public Long increase() {
+        if (testAPIRepository.count() == 0) {
+            TestAPITable table = TestAPITable.builder().count(0L).build();
+            testAPIRepository.save(table);
+        }
+        TestAPITable table = testAPIRepository.findTopByOrderByIdAsc();
+        table.increaseCount();
+        return table.getCount();
+    }
+```
+
+### 결과
+![](./load_lock.png)
+- 드디어 vuser 100부터 응답시간이 급증하는 현상을 발견
+- 해당 인스턴스의 최대 부하는 vuser 100이라고 해석 가능할 것 같다
